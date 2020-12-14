@@ -219,10 +219,20 @@
 
           },
           editto(id){
-            this.dialogFormVisible = true;
-            this.form.id=id;
+            var _this = this;
+            _this.dialogFormVisible = true;
 
-            //将数据显示
+            var params = new URLSearchParams();
+            params.append("id",id)
+            //将数据异步显示
+            this.$axios.post('warehouse/queryById.action',params).
+            then(function (result) {
+              _this.form=result.data;
+            }).
+            catch(function (error) {
+              alert(error);
+            });
+
           },
           edit(){
             var _this = this;
@@ -272,9 +282,6 @@
               _this.getDate();  //修改操作做完，刷新数据
 
               _this.form={id:'',name: '',adress:'',phone:'',remark:'',};//清空表单中的数据
-
-
-
             }).
             catch(function (error) {
               alert(error);
