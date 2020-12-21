@@ -13,9 +13,7 @@
               <el-menu
                 default-active="2"
                 class="el-menu-vertical-demo"
-                @open="handleOpen"
-                @close="handleClose">
-                        <!-- 菜单组件中使用路由配置方式
+>                        <!-- 菜单组件中使用路由配置方式
                   在el-main中通过router-view展示子组件
                   -->
                 <el-submenu index="1">
@@ -40,6 +38,16 @@
                     <el-menu-item index="1-1">待发货</el-menu-item>
                     <el-menu-item index="1-2">待收货</el-menu-item>
                     <el-menu-item index="1-3">代付款</el-menu-item>
+                  </el-menu-item-group>
+                </el-submenu>
+
+                <el-submenu index="3">
+                  <template slot="title">
+                    <i class="el-icon-location"></i>
+                    <span>审核管理</span>
+                  </template>
+                  <el-menu-item-group>
+                    <el-menu-item index="1-1" @click="addTab('商户审核','settlementApply')">商户审核</el-menu-item>
                   </el-menu-item-group>
                 </el-submenu>
 
@@ -68,18 +76,20 @@
 
 <script>
   import MenuVue from '../components/menu.vue';
-  import Userlist from "../components/userlist";
-  import Deptlist from "../components/deptlist";
-  import Stafflist from "../components/stafflist";
-  import Warehouselist from "../components/warehouse";
+  import UserList from "../components/userlist";
+  import DeptList from "../components/deptlist";
+  import StaffList from "../components/stafflist";
+  import WarehouseList from "../components/warehouse";
+  import SettlementApply from "../components/settlementApply";
 
     export default {
         components:{
           menuvue:MenuVue,
-          userlist:Userlist,
-          deptlist:Deptlist,
-          stafflist:Stafflist,
-          warehouselist:Warehouselist,
+          userlist:UserList,
+          deptlist:DeptList,
+          stafflist:StaffList,
+          warehouselist:WarehouseList,
+          settlementApply:SettlementApply,
         },
       data(){
           return {
@@ -130,9 +140,10 @@
 
 <style scoped>
   .el-header, .el-footer {
-    background-color: #B3C0D1;
+    background-color: white;
+    box-shadow: 0 0 10px 0 rgba(0,0,0,.1);
     color: #333;
-    text-align: center;
+    z-index: 99;
   }
 
   .el-aside {
@@ -142,10 +153,15 @@
   }
 
   .el-main {
-    background-color: #E9EEF3;
+    background-color: #f0f3f7;
     color: #333;
     text-align: center;
   }
+  .el-tabs{
+    background-color: white;
+    padding: 10px;
+  }
+
 
   .homeWrap {
     position: absolute;
