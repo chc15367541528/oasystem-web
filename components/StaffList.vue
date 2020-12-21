@@ -2,8 +2,8 @@
 
   <div>
     <!--  页头-->
-    <el-page-header @back="goBack" content="员工页面">
-    </el-page-header>
+<!--    <el-page-header @back="goBack" content="员工页面">-->
+<!--    </el-page-header>-->
 
     <br><br>
     <el-button
@@ -204,7 +204,7 @@
 
         });
 
-        this.$axios.post("Role/queryAll.action").then(function (result) {  //成功  执行then里面的方法
+        this.$axios.post("role/queryAll.action").then(function (result) {  //成功  执行then里面的方法
           _this.insertOptions = result.data;
           _this.editOptions = result.data;
         }).catch(function () { //失败 执行catch方法
@@ -293,9 +293,9 @@
       },
 
 // 页头
-      goBack() {
-        console.log('go back');
-      },
+//       goBack() {
+//         console.log('go back');
+//       },
 //分页
       handleSizeChange(val) {
         console.log(`每页 ${val} 条`);
@@ -320,3 +320,7 @@
     },
   }
 </script>
+
+<style scoped>
+
+</style>
