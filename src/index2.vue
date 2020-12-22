@@ -38,9 +38,7 @@
                     <span>订单管理</span>
                   </template>
                   <el-menu-item-group>
-                    <el-menu-item index="1-1">待发货</el-menu-item>
-                    <el-menu-item index="1-2">待收货</el-menu-item>
-                    <el-menu-item index="1-3">代付款</el-menu-item>
+                    <el-menu-item index="1-1"  @click="addTab('订单列表','userorderlist')">订单列表</el-menu-item>
                   </el-menu-item-group>
                 </el-submenu>
 
@@ -74,6 +72,7 @@
   import StaffList from "../components/StaffList";
   import Warehouselist from "../components/warehouse";
   import RoleList from "../components/RoleList";
+  import Userorderlist from "../components/userOrder";
 
     export default {
         components:{
@@ -82,7 +81,8 @@
           deptlist:Deptlist,
           StaffList:StaffList,
           warehouselist:Warehouselist,
-          RoleList:RoleList
+          RoleList:RoleList,
+          userorderlist:Userorderlist
         },
       data(){
           return {
