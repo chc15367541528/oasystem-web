@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import App from './App.vue'
-import App2 from "./App2.vue";
 import Index2 from "./index2.vue";
 
 // 导入element-ui
@@ -16,12 +15,12 @@ Axios.defaults.baseURL = "http://localhost:8080/oasystem_web_war_exploded"
 Vue.prototype.$axios = Axios
 
 //导入vuex
-import Store from '../vuex/store.js'
+// import Store from '../vuex/store.js'
 
 Vue.use(ElementUI)
 
 new Vue({
   el: '#app',
   render: h => h(Index2),
-  store:Store,//挂载Store
+  // store:Store,//挂载Store
 })
