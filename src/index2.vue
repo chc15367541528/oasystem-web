@@ -29,6 +29,7 @@
                     <el-menu-item index="1-3" @click="addTab('员工列表','StaffList')">员工管理</el-menu-item>
                     <el-menu-item index="1-4" @click="addTab('仓库列表','warehouselist')">仓库列表</el-menu-item>
                     <el-menu-item index="1-5" @click="addTab('角色列表','RoleList')">角色列表</el-menu-item>
+                    <el-menu-item index="1-6" @click="addTab('分类列表','commoditytypelist')">分类列表</el-menu-item>
                   </el-menu-item-group>
                 </el-submenu>
 
@@ -73,6 +74,7 @@
   import Warehouselist from "../components/warehouse";
   import RoleList from "../components/RoleList";
   import Userorderlist from "../components/userOrder";
+  import CommodityTypeList from "../components/commodityType";
 
     export default {
         components:{
@@ -82,7 +84,8 @@
           StaffList:StaffList,
           warehouselist:Warehouselist,
           RoleList:RoleList,
-          userorderlist:Userorderlist
+          userorderlist:Userorderlist,
+          commoditytypelist:CommodityTypeList
         },
       data(){
           return {

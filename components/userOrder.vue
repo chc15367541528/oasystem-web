@@ -118,7 +118,7 @@
         },
         table: {
           loading: false,
-          height: 550,
+          height: 400,
           data: [],
           page: 1,
           rows: 5,
