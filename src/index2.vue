@@ -12,9 +12,9 @@
             <el-col :span="12" style="width: 100%;height: 100%;">
               <el-menu
                 default-active="2"
-                class="el-menu-vertical-demo"
-                @open="handleOpen"
-                @close="handleClose">
+                class="el-menu-vertical-demo">
+<!--                @open="handleOpen"-->
+<!--                @close="handleClose">-->
                         <!-- 菜单组件中使用路由配置方式
                   在el-main中通过router-view展示子组件
                   -->
@@ -26,8 +26,9 @@
                   <el-menu-item-group>
                     <el-menu-item index="1-1" @click="addTab('用户列表','userlist')">用户列表</el-menu-item>
                     <el-menu-item index="1-2" @click="addTab('部门列表','deptlist')">部门列表</el-menu-item>
-                    <el-menu-item index="1-3" @click="addTab('员工列表','stafflist')">员工管理</el-menu-item>
+                    <el-menu-item index="1-3" @click="addTab('员工列表','StaffList')">员工管理</el-menu-item>
                     <el-menu-item index="1-4" @click="addTab('仓库列表','warehouselist')">仓库列表</el-menu-item>
+                    <el-menu-item index="1-5" @click="addTab('角色列表','RoleList')">角色列表</el-menu-item>
                   </el-menu-item-group>
                 </el-submenu>
 
@@ -70,16 +71,18 @@
   import MenuVue from '../components/menu.vue';
   import Userlist from "../components/userlist";
   import Deptlist from "../components/deptlist";
-  import Stafflist from "../components/stafflist";
+  import StaffList from "../components/StaffList";
   import Warehouselist from "../components/warehouse";
+  import RoleList from "../components/RoleList";
 
     export default {
         components:{
           menuvue:MenuVue,
           userlist:Userlist,
           deptlist:Deptlist,
-          stafflist:Stafflist,
+          StaffList:StaffList,
           warehouselist:Warehouselist,
+          RoleList:RoleList
         },
       data(){
           return {
