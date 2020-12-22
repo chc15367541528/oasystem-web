@@ -12,8 +12,10 @@
             <el-col :span="12" style="width: 100%;height: 100%;">
               <el-menu
                 default-active="2"
-                class="el-menu-vertical-demo"
->                        <!-- 菜单组件中使用路由配置方式
+                class="el-menu-vertical-demo">
+<!--                @open="handleOpen"-->
+<!--                @close="handleClose">-->
+                        <!-- 菜单组件中使用路由配置方式
                   在el-main中通过router-view展示子组件
                   -->
                 <el-submenu index="1">
@@ -24,8 +26,9 @@
                   <el-menu-item-group>
                     <el-menu-item index="1-1" @click="addTab('用户列表','userlist')">用户列表</el-menu-item>
                     <el-menu-item index="1-2" @click="addTab('部门列表','deptlist')">部门列表</el-menu-item>
-                    <el-menu-item index="1-3" @click="addTab('员工列表','stafflist')">员工管理</el-menu-item>
+                    <el-menu-item index="1-3" @click="addTab('员工列表','StaffList')">员工管理</el-menu-item>
                     <el-menu-item index="1-4" @click="addTab('仓库列表','warehouselist')">仓库列表</el-menu-item>
+                    <el-menu-item index="1-5" @click="addTab('角色列表','RoleList')">角色列表</el-menu-item>
                   </el-menu-item-group>
                 </el-submenu>
 
@@ -38,16 +41,6 @@
                     <el-menu-item index="1-1">待发货</el-menu-item>
                     <el-menu-item index="1-2">待收货</el-menu-item>
                     <el-menu-item index="1-3">代付款</el-menu-item>
-                  </el-menu-item-group>
-                </el-submenu>
-
-                <el-submenu index="3">
-                  <template slot="title">
-                    <i class="el-icon-location"></i>
-                    <span>审核管理</span>
-                  </template>
-                  <el-menu-item-group>
-                    <el-menu-item index="1-1" @click="addTab('商户审核','settlementApply')">商户审核</el-menu-item>
                   </el-menu-item-group>
                 </el-submenu>
 
@@ -76,20 +69,20 @@
 
 <script>
   import MenuVue from '../components/menu.vue';
-  import UserList from "../components/userlist";
-  import DeptList from "../components/deptlist";
-  import StaffList from "../components/stafflist";
-  import WarehouseList from "../components/warehouse";
-  import SettlementApply from "../components/settlementApply";
+  import Userlist from "../components/userlist";
+  import Deptlist from "../components/deptlist";
+  import StaffList from "../components/StaffList";
+  import Warehouselist from "../components/warehouse";
+  import RoleList from "../components/RoleList";
 
     export default {
         components:{
           menuvue:MenuVue,
-          userlist:UserList,
-          deptlist:DeptList,
-          stafflist:StaffList,
-          warehouselist:WarehouseList,
-          settlementApply:SettlementApply,
+          userlist:Userlist,
+          deptlist:Deptlist,
+          StaffList:StaffList,
+          warehouselist:Warehouselist,
+          RoleList:RoleList
         },
       data(){
           return {
@@ -140,10 +133,9 @@
 
 <style scoped>
   .el-header, .el-footer {
-    background-color: white;
-    box-shadow: 0 0 10px 0 rgba(0,0,0,.1);
+    background-color: #B3C0D1;
     color: #333;
-    z-index: 99;
+    text-align: center;
   }
 
   .el-aside {
@@ -153,15 +145,10 @@
   }
 
   .el-main {
-    background-color: #f0f3f7;
+    background-color: #E9EEF3;
     color: #333;
     text-align: center;
   }
-  .el-tabs{
-    background-color: white;
-    padding: 10px;
-  }
-
 
   .homeWrap {
     position: absolute;
