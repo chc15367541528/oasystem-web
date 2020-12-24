@@ -5,7 +5,7 @@
       <div class="head">
         <div class="container">
           <div class="s-sub">
-            <a class="head-left" href="Index" @click=" $router.push('') ">首页</a>
+            <a class="head-left" href="Index" @click=" $router.push('/center') ">首页</a>
             <a class="head-left" href="javascript:;">速客官网</a>
           </div>
           <div class="s-main">
@@ -37,12 +37,12 @@
     <div>
       <router-view/>
     </div>
-    <!--<div id="box">
+    <div id="box">
       <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
         <div class="types-oder-box" @mouseover="menuHide"></div>
         <div class="container">
           <div id="types_box">
-            &lt;!&ndash;左侧分类菜单&ndash;&gt;
+            <!--左侧分类菜单-->
             <div class="types-menu">
                     <span @mouseover="menuShow(1)" class="menus">手机<span
                       class="menus_jt">></span></span>
@@ -57,7 +57,7 @@
               <span @mouseover="menuShow(6)" class="menus">配件<span
                 class="menus_jt">></span></span>
             </div>
-            &lt;!&ndash;手机分类&ndash;&gt;
+            <!--手机分类-->
             <div id="menu1" class="menus-xx">
               <div class="menus-xx-type">
                 <a href="javascript:;">
@@ -107,7 +107,7 @@
                   </div>
                 </a>
               </div>
-              &lt;!&ndash;查看全部&ndash;&gt;
+              <!--查看全部-->
               <div class="menus-xx-type">
                 <a href="javascript:;">
                   <div class="menus-xx-type-whole">
@@ -117,7 +117,7 @@
                 </a>
               </div>
             </div>
-            &lt;!&ndash;笔记本分类&ndash;&gt;
+            <!--笔记本分类-->
             <div id="menu2" class="menus-xx">
               <div class="menus-xx-type">
                 <a href="javascript:;">
@@ -175,7 +175,7 @@
                   </div>
                 </a>
               </div>
-              &lt;!&ndash;查看全部&ndash;&gt;
+              <!--查看全部-->
               <div class="menus-xx-type">
                 <a href="javascript:;">
                   <div class="menus-xx-type-whole">
@@ -185,7 +185,7 @@
                 </a>
               </div>
             </div>
-            &lt;!&ndash;智能穿戴分类&ndash;&gt;
+            <!--智能穿戴分类-->
             <div id="menu3" class="menus-xx">
               <div class="menus-xx-type">
                 <a href="javascript:;">
@@ -235,7 +235,7 @@
                   </div>
                 </a>
               </div>
-              &lt;!&ndash;查看全部&ndash;&gt;
+              <!--查看全部-->
               <div class="menus-xx-type">
                 <a href="javascript:;">
                   <div class="menus-xx-type-whole">
@@ -245,7 +245,7 @@
                 </a>
               </div>
             </div>
-            &lt;!&ndash;智能家居分类&ndash;&gt;
+            <!--智能家居分类-->
             <div id="menu4" class="menus-xx">
               <div class="menus-xx-type">
                 <a href="javascript:;">
@@ -287,7 +287,7 @@
                   </div>
                 </a>
               </div>
-              &lt;!&ndash;查看全部&ndash;&gt;
+              <!--查看全部-->
               <div class="menus-xx-type">
                 <a href="javascript:;">
                   <div class="menus-xx-type-whole">
@@ -297,7 +297,7 @@
                 </a>
               </div>
             </div>
-            &lt;!&ndash;耳机音响分类&ndash;&gt;
+            <!--耳机音响分类-->
             <div id="menu5" class="menus-xx">
               <div class="menus-xx-type">
                 <a href="javascript:;">
@@ -339,7 +339,7 @@
                   </div>
                 </a>
               </div>
-              &lt;!&ndash;查看全部&ndash;&gt;
+              <!--查看全部-->
               <div class="menus-xx-type">
                 <a href="javascript:;">
                   <div class="menus-xx-type-whole">
@@ -349,7 +349,7 @@
                 </a>
               </div>
             </div>
-            &lt;!&ndash;配件分类&ndash;&gt;
+            <!--配件分类-->
             <div id="menu6" class="menus-xx">
               <div class="menus-xx-type">
                 <a href="javascript:;">
@@ -416,7 +416,7 @@
                 </a>
               </div>
 
-              &lt;!&ndash;查看全部&ndash;&gt;
+              <!--查看全部-->
               <div class="menus-xx-type">
                 <a href="javascript:;">
                   <div class="menus-xx-type-whole">
@@ -429,7 +429,7 @@
           </div>
         </div>
         <div class="types-oder-box" @mouseover="menuHide" style="margin-top: 350px"></div>
-        &lt;!&ndash;图片轮播&ndash;&gt;
+        <!--图片轮播-->
         <div>
           <ul class="carousel-indicators">
             <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
@@ -474,7 +474,7 @@
         </div>
       </div>
       <div style="width: 1170px;margin: auto">
-        &lt;!&ndash;个人/分类&ndash;&gt;
+        <!--个人/分类-->
         <div id="type-box">
           <div class="personal-box">
             <a href="javascript:;" class="personal-box-img"></a>
@@ -502,7 +502,7 @@
             </div>
           </div>
         </div>
-        &lt;!&ndash;热门商品&ndash;&gt;
+        <!--热门商品-->
         <div style="width: 100%" id="hot-goods-box">
           <span class="goods-type-title">热销单品</span>
 
@@ -612,7 +612,7 @@
             </div>
           </div>
         </div>
-        &lt;!&ndash;新品优惠&ndash;&gt;
+        <!--新品优惠-->
         <div style="width: 100%" id="new-goods-box">
           <span class="goods-type-title">新品优惠</span>
 
@@ -667,7 +667,7 @@
             </div>
           </div>
         </div>
-        &lt;!&ndash;推荐商品&ndash;&gt;
+        <!--推荐商品-->
         <div style="width: 100%" id="recommend-goods-box">
           <span class="goods-type-title">数码推荐</span>
 
@@ -722,12 +722,12 @@
             </div>
           </div>
         </div>
-        &lt;!&ndash;广告&ndash;&gt;
+        <!--广告-->
         <div style="width: 100%" id="gg-bottom">
           <a href="javascript:;" class="gg-bottom-a"></a>
         </div>
       </div>
-    </div>-->
+    </div>
     <!--底部-->
     <div class="foot">
       <div style="width: 1170px;margin: auto">
