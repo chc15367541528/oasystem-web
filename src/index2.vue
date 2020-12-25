@@ -43,6 +43,17 @@
                   </el-menu-item-group>
                 </el-submenu>
 
+                <el-submenu index="3">
+                  <template slot="title">
+                    <i class="el-icon-user-solid"></i>
+                    <span>权限管理</span>
+                  </template>
+                  <el-menu-item-group>
+                    <el-menu-item index="1-1" @click="addTab('员工角色','StaffRole')">员工角色</el-menu-item>
+                    <el-menu-item index="1-2" @click="addTab('角色权限','authority')">角色权限</el-menu-item>
+                  </el-menu-item-group>
+                </el-submenu>
+
               </el-menu>
             </el-col>
           </el-row>
@@ -75,17 +86,21 @@
   import RoleList from "../components/RoleList";
   import Userorderlist from "../components/userOrder";
   import CommodityTypeList from "../components/commodityType";
+  import StaffRole from '../components/StaffRole';
+  import Authority from '../components/authority';
 
     export default {
         components:{
           menuvue:MenuVue,
           userlist:Userlist,
           deptlist:Deptlist,
-          StaffList:StaffList,
+          staffList:StaffList,
           warehouselist:Warehouselist,
-          RoleList:RoleList,
+          roleList:RoleList,
           userorderlist:Userorderlist,
-          commoditytypelist:CommodityTypeList
+          commoditytypelist:CommodityTypeList,
+          staffRole:StaffRole,
+          authority:Authority
         },
       data(){
           return {
@@ -97,7 +112,6 @@
 
       methods: {
         addTab(titleName,comval) {
-
 
           var res =this.editableTabs.filter((item)=>{return  item.title ==titleName});
           if(res.length==0){

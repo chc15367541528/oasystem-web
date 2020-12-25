@@ -6,7 +6,7 @@ import UserLogin from "../components/UserLogin";
 import Hou_login from "../components/hou_login";
 import Index from "../src/index";
 import Index2 from "../src/index2";
-import Authority from "../src/authority";
+import Authority from "../components/authority";
 import Center from "../src/center.vue";
 import Detail from "../src/detail.vue";
 import Sort from "../src/sort.vue";
