@@ -12,7 +12,7 @@
             <a class="head-right" href="javascript:;"> {{account}}</a>
             <a class="head-right" href="javascript:;">注册</a>
             <a class="head-right" href="javascript:;">我的订单</a>
-            <a class="head-right" href="javascript:;">购物车</a>
+            <a class="head-right" href="javascript:;" @click="$router.push('/cart')">购物车</a>
           </div>
         </div>
       </div>
@@ -897,6 +897,7 @@
     left: 0;
     width: 100%;
     height: 100%;
+    text-align: left;
   }
 
   /*顶部样式*/
