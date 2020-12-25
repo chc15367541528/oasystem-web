@@ -12,46 +12,48 @@
       <el-table-column type="selection"  width="100" align="center"></el-table-column>
       <el-table-column label="商" width="100" align="right">
         <template slot-scope="scope">
-          <img :src="scope.row.commodity_img" width="98" height="98" alt="">
+          <img :src="scope.row.commodity.img" width="98" height="98" alt="">
         </template>
       </el-table-column>
       <el-table-column label="品" width="400" align="left" class="td-product">
         <template slot-scope="scope">
           <div class="product-info">
-            <h6 style="display: inline-block;width: 300px;">{{scope.row.commodity_name}}</h6>
-            <p>品牌：{{scope.row.commodity_brand}}&nbsp;&nbsp;颜色:{{scope.row.commodity_color}}&nbsp;&nbsp;</p>
-            <p>版本：{{scope.row.commodity_version}}</p>
+            <h6 style="display: inline-block;width: 300px;">{{scope.row.commodity.name}}</h6>
+            <p>品牌：{{scope.row.commodity.brand.name}}&nbsp;&nbsp;颜色:{{scope.row.colorInfo.color}}&nbsp;&nbsp;</p>
+            <p>版本：{{scope.row.versionInfo.version}}</p>
           </div>
           <div class="clearfix"></div>
         </template>
       </el-table-column>
       <el-table-column label="数量" align="center" width="192">
         <template slot-scope="scope">
-          <el-input-number v-model="scope.row.commodity_num" :min="1" :max="10" label="描述文字"></el-input-number>
+          <el-input-number v-model="scope.row.number" :min="1" :max="10" label="描述文字"></el-input-number>
         </template>
       </el-table-column>
       <el-table-column  label="单价(元)" align="center">
         <template slot-scope="scope">
-          <p class="red-text">￥<span class="price-text">{{scope.row.commodity_price}}</span>.00</p>
+          <p class="red-text">￥<span class="price-text">{{scope.row.versionInfo.price}}</span>.00</p>
         </template>
       </el-table-column>
       <el-table-column  label="金额(元)" align="center">
         <template slot-scope="scope">
-          <p class="red-text">￥<span class="price-text">{{scope.row.commodity_num*scope.row.commodity_price}}</span>.00</p>
+          <p class="red-text">￥<span class="price-text">{{scope.row.number*scope.row.versionInfo.price}}</span>.00</p>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
-<!--          <el-popconfirm-->
-<!--            confirm-button-text='确认'-->
-<!--            cancel-button-text='取消'-->
-<!--            icon="el-icon-info"-->
-<!--            icon-color="red"-->
-<!--            title="确定移除该商品吗？"-->
-<!--            @confirm="delOne(scope.row.id)"-->
-<!--          >-->
-          <a href="javascript:;" class="product-delete" @click="delOne(scope.row.id)">删除</a>
-<!--          </el-popconfirm>-->
+
+          <!--        删除按钮开始-->
+          <el-popconfirm
+            confirm-button-text='确认'
+            cancel-button-text='取消'
+            icon="el-icon-info"
+            icon-color="red"
+            title="确定移除该商品吗？"
+            @confirm="delOne(scope.row.id)"
+          >
+            <el-button slot="reference" icon="el-icon-delete-solid" type="danger" size="mini">删除</el-button>
+          </el-popconfirm>
         </template>
       </el-table-column>
     </el-table>
@@ -88,7 +90,7 @@
         formLabelWidth: "200",
         //表格中的数据
         tableData: [],
-        delids:[],//要删除的id数组集合
+        selectedId:[],//被选中的id集合
       };
     },
     methods: {
@@ -98,17 +100,18 @@
 
         // 去重获取被选中的id值存入到数组中
         if(val.length==0){
-          this.delids.length=0;
+          this.selectedId.length=0;
         }else{
 
           //先清空之前的
-          this.delids.length=0;
+          this.selectedId.length=0;
           //push值进去
           for (let selectedItem of val) {
-            this.delids.push(selectedItem.id)
+            this.selectedId.push(selectedItem.id)
           }
 
         }
+
       },
       handleDelete(index, row) {
         alert("取消了");
@@ -124,32 +127,18 @@
         then(function (result) {
           //获取到购物车对象集合
           var shoppingCartList = result.data.rows;
-          console.log(shoppingCartList);
-          //循环赋值到数组中
-          var shoppingCartLists = [];
-          var shoppingCart = {};
-          for (var i = 0; i < shoppingCartList.length; i++) {
-            shoppingCart={
-              'id':shoppingCartList[i].id,
-              'commodity_name':shoppingCartList[i].commodity.name,
-              'commodity_brand':shoppingCartList[i].commodity.brand.name,
-              'commodity_version':shoppingCartList[i].versionInfo.version,
-              'commodity_color':shoppingCartList[i].colorInfo.color,
-              'commodity_num':shoppingCartList[i].number,
-              'commodity_price':shoppingCartList[i].versionInfo.price,
-              'commodity_img':'src/assets/'+shoppingCartList[i].commodity_img
-            };
-            //加入到集合中
-            shoppingCartLists.push(shoppingCart);
+          for(var item of shoppingCartList){
+            item.commodity.img='src/assets/'+item.commodity.img;
           }
 
-          _this.tableData=shoppingCartLists;
+          _this.tableData=shoppingCartList;
 
         }).
         catch(function (error) {
-          alert(error);
+
         });
       },
+
       //删除单个购物车
       delOne(id){
         var _this =this;
@@ -170,7 +159,7 @@
           _this.getData();  //删除操作做完，刷新数据
 
         }).catch(function (error) { //失败 执行catch方法
-          alert(error);
+
         });
 
         //操作做完 清空delids
@@ -181,18 +170,17 @@
       delchecked(){
         var _this = this;
 
-        var delids = _this.delids;
+        var delids = _this.selectedId;
 
         //判断用户是否选中了商品
         if(delids.length==0){
-          alert("请选中商品后删除！！！");
+          _this.$message.warning("请选中商品后删除");
           return;
         }
 
         var delidsString = "";
         //循环合成一个id字符串
         for(var i=0;i<delids.length;i++){
-          alert(delids[i]);
           delidsString=delidsString+delids[i]+",";
         }
 
@@ -202,19 +190,14 @@
         this.$axios.post("shoppingCar/delete.action",params).
         then(function (result) {  //成功  执行then里面的方法
 
-          _this.$message({
-            message: result.data,
-            type: 'success'
-          });
-
           _this.getData();  //删除操作做完，刷新数据
 
         }).catch(function (error) { //失败 执行catch方法
-          alert(error);
+
         });
 
         //操作做完 清空delids
-        this.delids.length=0;
+        this.selectedId.length=0;
       },
       //继续购物
       keepShopping(){
@@ -224,8 +207,59 @@
       bug(){
         //点击结算时，添加订单数据
         var _this = this;
+        var orderNumber = "";
 
-        var params = new URLSearchParams();
+        var multipleSelection = _this.multipleSelection;
+        for(var item of multipleSelection){
+
+          console.log("666"+item.user.user_id);
+
+          orderNumber = "sk";
+
+          var date = new Date();
+          var time=date.getFullYear()+""+(date.getMonth()+1)+""+date.getDate();//表示当前日期
+
+          //加上日期
+          orderNumber=orderNumber+time;
+          //加上后八位随机数
+          for(var i=0;i<8;i++){
+            orderNumber=orderNumber+Math.floor(Math.random()*9+1);
+          }
+
+          var params = new URLSearchParams();
+          params.append("order_number",orderNumber);
+          params.append("user_id",item.user.id);
+          params.append("merchants_id",item.user.user_id);
+          params.append("color",item.colorInfo.color);
+          params.append("version",item.versionInfo.version);
+          var img = item.commodity.img
+          var imgList = img.split("/");
+          params.append("img",imgList[2]);
+          params.append("price",item.versionInfo.price);
+          params.append("number",item.number);
+          params.append("commodity_id",item.commodity.id);
+          params.append("totalmoney",Number(item.versionInfo.price)*Number(item.number));
+          params.append("state",1);
+          params.append("remark","");
+
+
+          //异步提交数据
+          this.$axios.post("userOrder/insert.action",params).
+          then(function (result) {  //成功  执行then里面的方法
+            if (result.data=="添加成功"){
+              //删除被结算的数据
+              _this.delchecked();
+            }
+
+          }).catch(function (error) { //失败 执行catch方法
+
+          });
+
+        }
+
+
+
+        _this.getData();  //操作做完，刷新数据
 
       },
     },
@@ -236,7 +270,7 @@
         var price_total = 0;
         for (var i = 0; i < this.multipleSelection.length; i++) {
           price_total +=
-            this.multipleSelection[i].commodity_price * this.multipleSelection[i].commodity_num;
+            this.multipleSelection[i].versionInfo.price * this.multipleSelection[i].number;
         }
         return price_total;
       },
@@ -244,7 +278,7 @@
       totalNumber() {
         var number_total = 0;
         for (var i = 0; i < this.multipleSelection.length; i++) {
-          number_total += this.multipleSelection[i].commodity_num;
+          number_total += this.multipleSelection[i].number;
         }
         return number_total;
       }

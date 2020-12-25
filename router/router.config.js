@@ -3,12 +3,13 @@ import Vue from 'vue'
 import VueRouter from "vue-router";
 
 import UserLogin from "../components/UserLogin";
-import Hou_login from "../components/hou_login";
 import Index from "../src/index";
+import Authority from "../src/authority";
 import Index2 from "../src/index2";
 import Authority from "../components/authority";
 import Center from "../src/center.vue";
 import Detail from "../src/detail.vue";
+import Hou_login from "../src/hou_login.vue";
 import Sort from "../src/sort.vue";
 
 
@@ -23,6 +24,8 @@ var router = new VueRouter({
     {path:"/hou_login",component:Hou_login},
     {path:"/detail",component:Detail},
     {path:"/sort",component:Sort},
+    {path:"/cart",component:Cart},
+    {path:"/index2",component:Index2},
     {path:"/index2",component:Index2},
     {path:"/",component:Hou_login}//默认访问登录页面
   ]
