@@ -5,12 +5,16 @@
       <div class="head">
         <div class="container">
           <div class="s-sub">
-            <a class="head-left" href="Index" @click=" $router.push('/center') ">首页</a>
-            <a class="head-left" href="javascript:;">速客官网</a>
+            <a class="head-left" href="index.html">首页</a>
+            <a class="head-left" href="index.html">速客官网</a>
           </div>
           <div class="s-main">
-            <a class="head-right" href="javascript:;"> {{account}}</a>
-            <a class="head-right" href="javascript:;">注册</a>
+            <span v-show="account==0" class="head-right">您好，请
+              <a href="javascript:;" style="color: white" @click="$router.push('/userLogin')">登录</a>
+            </span>
+
+            <a class="head-right" href="javascript:;" v-show="account!=0">欢迎你， {{account}}</a>
+            <a class="head-right" href="javascript:;" v-show="account==0">注册</a>
             <a class="head-right" href="javascript:;">我的订单</a>
             <a class="head-right" href="javascript:;" @click="$router.push('/cart')">购物车</a>
           </div>
@@ -44,7 +48,7 @@
           <div id="types_box">
             <!--左侧分类菜单-->
             <div class="types-menu">
-                    <span @mouseover="menuShow(1)" class="menus">手机<span
+                    <span @mouseover="menuShow(1)" @click=" $router.push('/sort') " class="menus">手机<span
                       class="menus_jt">></span></span>
               <span @mouseover="menuShow(2)" class="menus">笔记本<span
                 class="menus_jt">></span></span>
@@ -478,11 +482,15 @@
         <div id="type-box">
           <div class="personal-box">
             <a href="javascript:;" class="personal-box-img"></a>
-            <div class="personal-box-name">
+            <div class="personal-box-name" v-show="account==0">
               <span class="personal-box-name-span">您好，请</span>
-              <a class="personal-box-name-a" href="javascript:;">登录</a>
+              <a class="personal-box-name-a" href="javascript:;" @click="$router.push('/userLogin')">登录</a>
               <span class="personal-box-name-span">/</span>
               <a class="personal-box-name-a" href="javascript:;">注册</a>
+            </div>
+            <div class="personal-box-name" v-show="account!=0">
+              <span class="personal-box-name-span">欢迎你，</span>
+              <a class="personal-box-name-a" href="javascript:;">{{account}}</a>
             </div>
             <div class="personal-box-btn">
               <button class="personal-box-btn-personal">个人中心</button>
@@ -861,10 +869,24 @@
     name: "index",
     data(){
       return {
-        account:sessionStorage.getItem("account")
+        account:0,
       }
-    }
-    /*methods: {
+    },
+    created() {
+      this.getDate();
+    },
+    methods: {
+      getDate(){
+        var _this=this;
+        if (sessionStorage.getItem("account")!=null&&sessionStorage.getItem("account")!=undefined&&sessionStorage.getItem("account")!=""){
+          _this.account=sessionStorage.getItem("account");
+        }else {
+          _this.account=0;
+        }
+
+
+
+      },
       menuShow: function (data) {
         $(".types-menu").css("border-radius", "10px 0 0 10px");
         $(".menus-xx").hide();
@@ -886,7 +908,7 @@
         $(".types-menu").css("border-radius", "10px");
         $(".menus-xx").hide();
       },
-    }*/
+    }
   }
 </script>
 

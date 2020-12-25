@@ -5,14 +5,18 @@
       <div class="head">
         <div class="container">
           <div class="s-sub">
-            <a class="head-left" href="javascript:;">首页</a>
-            <a class="head-left" href="javascript:;">速客官网</a>
+            <a class="head-left" href="index.html">首页</a>
+            <a class="head-left" href="index.html">速客官网</a>
           </div>
           <div class="s-main">
-            <a class="head-right" href="javascript:;">请登录</a>
-            <a class="head-right" href="javascript:;">注册</a>
+            <span v-show="account==0" class="head-right">您好，请
+              <a href="javascript:;" style="color: white" @click="$router.push('/userLogin')">登录</a>
+            </span>
+
+            <a class="head-right" href="javascript:;" v-show="account!=0">欢迎你， {{account}}</a>
+            <a class="head-right" href="javascript:;" v-show="account==0">注册</a>
             <a class="head-right" href="javascript:;">我的订单</a>
-            <a class="head-right" href="javascript:;">购物车</a>
+            <a class="head-right" href="javascript:;" @click="$router.push('/cart')">购物车</a>
           </div>
         </div>
       </div>
@@ -37,8 +41,8 @@
       <div class="container">
         <!--左侧图片-->
         <div class="goods_img_box">
-          <div class="goods_img_max"
-               :style="imageData[0].img">
+          <div class="goods_img_max">
+            <div class="goods_img_max_img" :style="imageData[0].img"></div>
           </div>
 
           <div class="goods_img_min_box" v-for="item in imageData">
@@ -232,11 +236,12 @@
         imageData: [],
         colorData: [],
         versionData: [],
-        commodity_id:1,
+        commodity_id: 0,
         numbers: 1,
         colorId: 0,
         versionId: 0,
         price: 0,
+        account:0,
       }
     },
     created() {
@@ -245,9 +250,17 @@
     methods: {
       getDate() {
         var _this = this;
+
+        if (sessionStorage.getItem("account")!=null&&sessionStorage.getItem("account")!=undefined&&sessionStorage.getItem("account")!=""){
+          _this.account=sessionStorage.getItem("account");
+        }else {
+          _this.account=0;
+        }
+
+        _this.commodity_id = _this.getUrlKey("id");
         //商品查询
         var params = new URLSearchParams();
-        params.append('id', '1');
+        params.append('id', _this.commodity_id);
         this.$axios.post("commodity/queryById.action", params).then(function (result) {  //成功  执行then里面的方法
 
           var data = result.data;
@@ -318,25 +331,25 @@
         let index = image.lastIndexOf("'")
         image = image.substring(0, index);
 
-        $(".goods_img_max").css("background-image", "url('" + image + "')")
+        $(".goods_img_max_img").css("background-image", "url('" + image + "')")
       },
       /*数量减*/
       btn_jian: function () {
-        var _this=this;
+        var _this = this;
         var number = parseInt($(".goods_num").val());
         if (number != 1) {
-          number=number-1;
+          number = number - 1;
           $(".goods_num").val(number);
         }
-        _this.numbers=number;
+        _this.numbers = number;
       },
       /*数量加*/
       btn_jia: function () {
-        var _this=this;
+        var _this = this;
         var number = parseInt($(".goods_num").val());
-        number=number+1;
+        number = number + 1;
         $(".goods_num").val(number);
-        _this.numbers=number;
+        _this.numbers = number;
       },
       /*选择颜色*/
       colorChange: function (event, id) {
@@ -363,17 +376,23 @@
         $(el).css("color", "red");
       },
       /*加入购物车*/
-      addCar:function () {
-        var _this=this;
+      addCar: function () {
+        var _this = this;
         var image = _this.imageData[0].img.slice(41);
         let index = image.lastIndexOf("'")
         image = image.substring(0, index);
 
-        if (_this.colorId==0){
-          alert("请选择颜色")
-        }else if (_this.versionId==0){
-          alert("请选择版本")
-        }else {
+        if (_this.colorId == 0) {
+          _this.$message({
+            message: '请选择颜色信息',
+            type: 'warning'
+          });
+        } else if (_this.versionId == 0) {
+          _this.$message({
+            message: '请选择版本信息',
+            type: 'warning'
+          });
+        } else {
           var params = new URLSearchParams();
 
           params.append('user_id', "1");
@@ -384,12 +403,29 @@
           params.append('number', _this.numbers);
 
           this.$axios.post("shoppingCar/insert.action", params).then(function (result) {  //成功  执行then里面的方法
-            alert(result.data);
+            const h = _this.$createElement;
+
+            _this.$notify({
+              title: result.data,
+              message: h('i', {style: 'color: gray;font-style:normal'}, "已为您将 "+$(".goods_name").text()+" 添加至购物车")
+            });
+
           }).catch(function () { //失败 执行catch方法
 
           });
         }
-      }
+      },
+
+      handleScroll(e){
+        var scrollTop = e.target.documentElement.scrollTop || e.target.body.scrollTop;      // 执行代码
+      },
+
+      getUrlKey(name) {
+        return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.href) || [, ""])[1].replace(/\+/g, '%20')) || null
+      },
+    },
+    mounted(){
+      window.addEventListener('scroll',this.handleScroll,true)
     },
   }
 </script>
@@ -409,6 +445,8 @@
     height: 36px;
     line-height: 36px;
     background-color: rgba(0, 0, 0, .8);
+    position: fixed;
+    z-index: 999;
   }
 
   .s-sub {
@@ -463,7 +501,7 @@
     width: 100%;
     height: 80px;
     background-color: white;
-    position: absolute;
+    position: fixed;
     z-index: 999;
     top: 35px;
     margin-bottom: 80px;
@@ -627,9 +665,10 @@
 
   .goods_img_box {
     width: 40%;
-    height: auto;
-    float: left;
-    margin-top: 35px;
+    height: 600px;
+    position: absolute;
+    padding-top: 35px;
+    bottom: 40px;
   }
 
   .goods_message_box {
@@ -641,6 +680,11 @@
 
   .goods_img_max {
     float: left;
+    width: 100%;
+    height: 456px;
+    text-align: center;
+  }
+  .goods_img_max_img{
     width: 456px;
     height: 456px;
     background-size: 100% 100%;
