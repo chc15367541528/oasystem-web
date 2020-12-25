@@ -7,35 +7,66 @@
         </el-row>
       </el-header>
       <el-container>
-        <el-aside>
-          <el-table
-            :data="roleTable"
-            style="width: 100%"
-            @selection-change="onRowClick">
+        <el-aside style="width: 500px">
+<!--          <el-table-->
+<!--            :data="roleTable"-->
+<!--            style="width: 100%"-->
+<!--            @selection-change="onRowClick">-->
 
-            <el-table-column
-              type="selection"
-              prop="id"
-              width="180">
-            </el-table-column>
+<!--            <el-table-column-->
+<!--              type="selection"-->
+<!--              prop="id"-->
+<!--              width="180">-->
+<!--            </el-table-column>-->
 
-            <el-table-column
-              label="角色"
-              prop="name"
-              width="180">
-            </el-table-column>
-          </el-table>
+<!--            <el-table-column-->
+<!--              label="角色"-->
+<!--              prop="name"-->
+<!--              width="180">-->
+<!--            </el-table-column>-->
+<!--          </el-table>-->
+          <div style="width: 400px">
+            <el-table
+              :data="role"
+              @row-click="getRoleMenu">
+              <el-table-column
+                prop="id"
+                label="角色id">
+              </el-table-column>
+              <el-table-column
+                prop="name"
+                label="角色名">
+              </el-table-column>
+            </el-table>
+          </div>
         </el-aside>
         <el-main>
+<!--          <el-tree-->
+<!--            :data="treeMenu"-->
+<!--            show-checkbox-->
+<!--            node-key="id"-->
+<!--            :default-expanded-keys="[1, 1]"-->
+<!--            :default-checked-keys="[1]"-->
+<!--            :props="defaultProps">-->
+
+<!--          </el-tree>-->
+          <el-input v-model="rname" readonly style="width: 200px"></el-input>
           <el-tree
-            :data="treeMenu"
+            :data="menuDate"
             show-checkbox
             node-key="id"
-            :default-expanded-keys="[1, 1]"
-            :default-checked-keys="[1]"
-            :props="defaultProps">
-
+            ref="tree"
+            :default-expanded-keys="roleMenu"
+            :default-checked-keys="roleMenu"
+            :default-expand-all="false"
+            :expand-on-click-node="false">
           </el-tree>
+
+
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="authorRoleMenudialog = false" >取 消</el-button>
+            <el-button type="primary" @click="author">授权</el-button>
+          </div>
         </el-main>
       </el-container>
     </el-container>
@@ -47,7 +78,15 @@
     name: "authority",
     data() {
       return {
+
+        role:[],
+        menuDate:[],
         roleMenu:[],
+        authorRoleMenudialog:false,
+        menuids:[],//获取所有选中的节点
+        roleid:0,
+        mids:'',
+        rname:'',
         roleTable: [],
         multipleSelection: [],//选中的id
         checkedAll: false,//是否全选
@@ -57,60 +96,75 @@
       }
     },
     methods: {
-      getTreeData() {  //获取数据
-      },
-      getRoleData() {  //获取数据
-        var _this = this
-
-        this.$axios.post("role/queryAll.action").then(function (result) {  //成功  执行then里面的方法
-          _this.roleTable = result.data;
-        }).catch(function () { //失败 执行catch方法
-
-        });
-
-      },
-      showMenuByRoleId(id) {
-        var _this = this
-
-        var params = new URLSearchParams();
-        params.append("rid", id)
-
-        this.$axios.post("menu/queryAllMenus.action", params).then(function (result) {  //成功  执行then里面的方法
-
-          for(var i = 0;i<result.data.length;i++){
-            _this.treeMenu.push(result.data[i].mid)
-          }
-        }).catch(function () { //失败 执行catch方法
-
-        });
-      },
-      onRowClick(row, event, column) {
-
+      getrole() {  //获取数据
         var _this = this;
-        _this.multipleSelection = [];
-        for (var i = 0; i < row.length; i++) {
-          _this.multipleSelection.push(row[i].id);
-        }
+        this.$axios.post("role/queryAll.action").then(function (result) {  //成功  执行then里面的方法
+          _this.role = result.data;
+
+        }).catch(function (error) { //失败 执行catch方法
+          console.log(error)
+        });
       },
-      auth(){
-        var _this = this
+      getdata() {  //获取数据
+        var _this = this;
+        var params=new URLSearchParams();
+
+        params.append("staid",sessionStorage.getItem("staffid"))
+        this.$axios.post("queryAuthorMenu.action",params).then(function (result) {  //成功  执行then里面的方法
+          _this.menuDate = result.data;
+
+        }).catch(function (error) { //失败 执行catch方法
+          console.log(error)
+        });
+      },
+      getRoleMenu(row,column,event){
+        var _this = this;
+
+        _this.authorRoleMenudialog=true;
 
         var params = new URLSearchParams();
-        params.append("rid", id)
+        params.append("rid",row.roleid);
+        this.$axios.post("queryAllRoleMenu.action",params).then(function (result) {  //成功  执行then里面的方法
+          for(var i=0;i<result.data.length;i++){
+            _this.roleMenu.push(result.data[i].mid);
+          };
+          _this.roleid=row.roleid;
+          _this.rname=row.rolename
 
-        this.$axios.post("menu/authority.action", params).then(function (result) {  //成功  执行then里面的方法
-
-          for(var i = 0;i<result.data.length;i++){
-            _this.treeMenu.push(result.data[i].mid)
-          }
-        }).catch(function () { //失败 执行catch方法
-
+          _this.getdata();
+        }).catch(function (error) { //失败 执行catch方法
+          console.log(error)
         });
+      },
+      closeDialog(){
+        this.roleMenu=[];
+      },
+      author(){
+        var _this=this;
+
+        _this.menuids=this.$refs.tree.getCheckedKeys();
+        _this.menuids.forEach((item)=>{
+          _this.mids+=item+','
+        })
+
+        var params = new URLSearchParams();
+        params.append("roleid",_this.roleid);
+        params.append("menuids",_this.mids);
+        this.$axios.post("author.action",params).then(function (result) {  //成功  执行then里面的方法
+          _this.$message({
+            message: result.data,
+            type: 'success'
+          });
+
+          _this.authorRoleMenudialog=false;
+        }).catch(function (error) { //失败 执行catch方法
+          console.log(error)
+        })
       }
     },
     created() {
-      this.getRoleData();
-    },
+      this.getrole();
+    }
   }
 </script>
 

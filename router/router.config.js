@@ -9,12 +9,11 @@ import Center from "../src/center.vue";
 import Detail from "../src/detail.vue";
 import Hou_login from "../src/hou_login.vue";
 import Sort from "../src/sort.vue";
-import Cart from "../src/Cart";
-import Index2 from "../src/index2";
+
 
 Vue.use(VueRouter)
 
-export  default  new VueRouter({
+var router = new VueRouter({
   routes:[
     {path:"/userLogin",component:UserLogin},
     {path:"/index",component:Index},
@@ -25,6 +24,15 @@ export  default  new VueRouter({
     {path:"/sort",component:Sort},
     {path:"/cart",component:Cart},
     {path:"/index2",component:Index2},
-    {path:"/",component:Index}//默认访问登录页面
+    {path:"/index2",component:Index2},
+    {path:"/",component:Hou_login}//默认访问登录页面
   ]
 })
+
+const originalPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch(err => err)
+}
+
+//导出路由管理器对象
+export default router

@@ -5,34 +5,42 @@
         <div class="container">
 
           <div class="sign-content">
-            <h2>速客数码后台登录</h2>
 
+            <h2>速客数码后台登录</h2>
+<!--            <el-form :model="loginForm">-->
             <div class="row">
               <div class="col-sm-12">
                 <div class="signin-form">
-                  <form>
                     <div class="form-group">
                       <label for="login_user">用户名</label>
-                      <input type="email" class="form-control" id="login_user" placeholder="请输入用户名">
+<!--                      <el-form-item label="账号" prop="account">-->
+<!--                        <el-input v-model="loginForm.account"></el-input>-->
+                        <input class="form-control" v-model="account" id="login_user" placeholder="请输入用户名">
+<!--                      </el-form-item>-->
                     </div>
                     <div class="form-group">
                       <label for="login_pass">密码</label>
-                      <input type="password" class="form-control" id="login_pass" placeholder="请输入密码">
+<!--                      <el-form-item label="密码" prop="password">-->
+<!--                        <el-input type="password" v-model="loginForm.password" autocomplete="off"></el-input>-->
+                        <input type="password" v-model="password" class="form-control" id="login_pass" placeholder="请输入密码">
+<!--                      </el-form-item>-->
                     </div>
-                  </form>
                 </div>
               </div>
             </div>
             <div class="row">
               <div class="col-sm-12">
                 <div class="signin-footer">
+<!--                  <el-form-item>-->
                   <button type="button" class="btn signin_btn signin_btn_two" data-toggle="modal"
-                          data-target=".signin_modal">
+                          data-target=".signin_modal" @click="login()">
                     登录
                   </button>
+<!--                  </el-form-item>-->
                 </div>
               </div>
             </div>
+<!--            </el-form>-->
           </div>
         </div>
 
@@ -42,7 +50,37 @@
 
 <script>
     export default {
-        name: "hou_login"
+        name: "hou_login",
+      data() {
+        return {
+            account: '',
+            password: ''
+        };
+      },
+      methods: {
+        login() {
+          var _this = this
+
+          var params = new URLSearchParams();
+          params.append("account", _this.account);
+          params.append("password", _this.password);
+
+          this.$axios.post("staff/login.action", params).then(function (result) {
+            if (result.data.code == "0") {
+              //登录成功  跳转 首页
+              alert(result.data.msg);
+              sessionStorage.setItem("account", result.data.account)
+              sessionStorage.setItem("staffid", result.data.id)
+              _this.$router.push("/index2");
+            } else {
+              alert(result.data.msg);
+            }
+          }).catch(function (error) {
+              elert(error);
+            }
+          )
+        }
+      }
     }
 </script>
 
