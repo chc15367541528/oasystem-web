@@ -5,14 +5,18 @@
       <div class="head">
         <div class="container">
           <div class="s-sub">
-            <a class="head-left" href="javascript:;">首页</a>
-            <a class="head-left" href="javascript:;">速客官网</a>
+            <a class="head-left" href="index.html">首页</a>
+            <a class="head-left" href="index.html">速客官网</a>
           </div>
           <div class="s-main">
-            <a class="head-right" href="javascript:;">请登录</a>
-            <a class="head-right" href="javascript:;">注册</a>
+            <span v-show="account==0" class="head-right">您好，请
+              <a href="javascript:;" style="color: white" @click="$router.push('/userLogin')">登录</a>
+            </span>
+
+            <a class="head-right" href="javascript:;" v-show="account!=0">欢迎你， {{account}}</a>
+            <a class="head-right" href="javascript:;" v-show="account==0">注册</a>
             <a class="head-right" href="javascript:;">我的订单</a>
-            <a class="head-right" href="javascript:;">购物车</a>
+            <a class="head-right" href="javascript:;" @click="$router.push('/cart')">购物车</a>
           </div>
         </div>
       </div>
@@ -41,7 +45,7 @@
             分类：
           </div>
           <div class="type_box_texts">
-            <el-radio-group class="type_box_text" v-model="typeCheck" v-for="item in commodityTypeData">
+            <el-radio-group class="type_box_text" v-model="typeCheck" v-for="item in commodityTypeData" :key="item.id">
               <el-radio @change="typeQuery(item.id)" :label="item.id">{{item.name}}</el-radio>
             </el-radio-group>
           </div>
@@ -58,7 +62,7 @@
             品牌/种类：
           </div>
           <div class="brand-box_texts">
-              <el-radio-group class="type_box_text" v-model="brandCheck" v-for="item in brandData">
+              <el-radio-group class="type_box_text" v-model="brandCheck" v-for="item in brandData" :key="item.id">
                 <el-radio @change="brandQuery(item.id)" :label="item.id">{{item.name}}</el-radio>
               </el-radio-group>
           </div>
@@ -75,7 +79,7 @@
             暂未找到您要查找的商品，正在努力为您备货中...
             <img title="跑得太慢？点击加速" src="src/img/26097-202004300637175eaa721d7566a.gif" @click="imgpaoBu($event)" style="width: 100px;height: 100px;cursor: pointer"/>
           </div>
-          <div class="good-boxs" @click="selectCommodity(item.id)" v-for="item in commodityData" v-if="commodityData.length!=0">
+          <div class="good-boxs" @click=" $router.push('/detail?id='+item.id) " v-for="item in commodityData" v-if="commodityData.length!=0">
             <div class="good-box">
               <div class="goods_img_box">
                 <img :src="item.img" class="goods_img"/>
@@ -239,6 +243,7 @@
         brandId:"",
         typeCheck:0,
         brandCheck:0,
+        account:0,
       }
     },
     created() {
@@ -248,6 +253,12 @@
       /*获取数据*/
       getDate(tid,bid) {
         var _this = this;
+
+        if (sessionStorage.getItem("account")!=null&&sessionStorage.getItem("account")!=undefined&&sessionStorage.getItem("account")!=""){
+          _this.account=sessionStorage.getItem("account");
+        }else {
+          _this.account=0;
+        }
 
         //商品查询
         var params = new URLSearchParams();

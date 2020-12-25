@@ -436,7 +436,7 @@
           </a>
         </div>
       </div>
-      <div style="width: 1170px;margin: auto">
+      <div class="container">
         <!--个人/分类-->
         <div id="type-box">
           <div class="personal-box">
