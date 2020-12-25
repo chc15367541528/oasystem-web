@@ -30,6 +30,7 @@
                     <el-menu-item index="1-4" @click="addTab('仓库列表','warehouselist')">仓库列表</el-menu-item>
                     <el-menu-item index="1-5" @click="addTab('角色列表','RoleList')">角色列表</el-menu-item>
                     <el-menu-item index="1-6" @click="addTab('分类列表','commoditytypelist')">分类列表</el-menu-item>
+                    <el-menu-item index="1-7" @click="addTab('商品管理','commoditylist')">商品管理</el-menu-item>
                   </el-menu-item-group>
                 </el-submenu>
 
@@ -75,6 +76,7 @@
   import RoleList from "../components/RoleList";
   import Userorderlist from "../components/userOrder";
   import CommodityTypeList from "../components/commodityType";
+  import CommodityList from "../components/commodity";
 
     export default {
         components:{
@@ -85,7 +87,8 @@
           warehouselist:Warehouselist,
           RoleList:RoleList,
           userorderlist:Userorderlist,
-          commoditytypelist:CommodityTypeList
+          commoditytypelist:CommodityTypeList,
+          commoditylist:CommodityList,
         },
       data(){
           return {
@@ -144,13 +147,13 @@
   .el-aside {
     background-color: #D3DCE6;
     color: #333;
-    text-align: center;
+    text-align: left;
   }
 
   .el-main {
     background-color: #E9EEF3;
     color: #333;
-    text-align: center;
+    text-align: left;
   }
 
   .homeWrap {

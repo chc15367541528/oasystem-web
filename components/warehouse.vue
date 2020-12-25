@@ -13,28 +13,18 @@
     <!--    查询条件开始-->
 
     <!--    添加按钮开始-->
-    <el-button
-      slot="reference"
-      icon="el-icon-edit"
-      style="color: green"
-      @click="insertdialogFormVisible = true"
-    >添加仓库</el-button>
+    <el-button type="success" icon="el-icon-plus" size="mini" @click="insertdialogFormVisible = true">新增</el-button>
     <!--    添加按钮结束-->
 
     <!--    批量删除按钮开始-->
-    <el-button
-      slot="reference"
-      icon="el-icon-info"
-      style="color: green"
-      @click="delallto"
-    >删除仓库</el-button>
+    <el-button icon="el-icon-delete-solid" type="danger" size="mini" @click="delall">批量删除</el-button>
     <!--    批量删除按钮结束-->
 
     <!--    表格展示开始-->
     <el-table
       :data="tableData"
       style="width: 100%"
-      @select="onRowClick">
+      @selection-change="onRowClick">
       <el-table-column
         prop="id"
         type="selection"
@@ -63,12 +53,7 @@
         label="操作">
         <template slot-scope="scope">
           <!--        编辑按钮开始-->
-          <el-button
-            slot="reference"
-            icon="el-icon-edit"
-            style="border-radius: 100%;background-color:deepskyblue;color: black;"
-            @click="editto(scope.row.id)"
-          ></el-button>
+          <el-button slot="reference" icon="el-icon-edit-outline" type="primary" @click="editto(scope.row.id)" size="mini">编辑</el-button>
           <!--        编辑按钮结束-->
 
           <!--        删除按钮开始-->
@@ -80,15 +65,11 @@
             title="确定删除该仓库吗？"
             @confirm="del(scope.row.id)"
           >
-            <el-button
-              slot="reference"
-              icon="el-icon-delete-solid"
-              style="border-radius: 100%;background-color:orangered;color:#ff0202;"
-            ></el-button>
+            <el-button slot="reference" icon="el-icon-delete-solid" type="danger" size="mini">删除</el-button>
           </el-popconfirm>
           <!--        删除按钮结束-->
           <!--          查看详情开始-->
-          <a href="#" style="margin-left: 10px;" @click="openCommodityDetailDialog(scope.row.id)"><i class="el-icon-more"></i></a>
+          <el-button type="primary" icon="el-icon-search" size="mini" @click="openCommodityDetailDialog(scope.row.id)">查看详情</el-button>
           <!--          查看详情结束-->
         </template>
       </el-table-column>
@@ -165,19 +146,23 @@
       <!--      查询条件开始-->
       商品名：<el-input v-model="commodity_name"
                     prefix-icon="el-icon-search"
-                    size="small"
+                    size="mini"
                     placeholder="请输入商品名字"
                     clearable
                     style="width: 250px;"></el-input>
       <!--      查询条件结束-->
 
       <!--      添加按钮开始-->
-      <el-button type="primary" icon="el-icon-circle-plus" @click.prevent="addComDialogVisible = true">添加商品</el-button>
+      <el-button type="primary" icon="el-icon-circle-plus" @click.prevent="addWarehouseCom" size="mini">添加商品</el-button>
       <!--      添加按钮开始-->
 
       <!--      批量删除按钮结束-->
-      <el-button type="danger" icon="el-icon-delete-solid" @click="detailDelAll">批量删除</el-button>
+      <el-button type="danger" icon="el-icon-delete-solid" @click="detailDelAll" size="mini">批量删除</el-button>
       <!--      批量删除按钮结束-->
+
+      <!--             批量采购按钮开始-->
+      <el-button  icon="el-icon-shopping-cart-full" type="primary" @click="buyAllWarehouseDetailComTo" size="mini">批量采购</el-button>
+      <!--             批量采购按钮结束-->
 
       <!--      仓库详情表开始-->
       <el-table
@@ -213,58 +198,105 @@
                title="确定删除该商品吗？"
                @confirm="detailDelOne(scope.row.id)"
              >
-               <el-button slot="reference" icon="el-icon-delete-solid" type="danger">删除</el-button>
+               <el-button slot="reference" icon="el-icon-delete-solid" type="danger" size="mini">删除</el-button>
              </el-popconfirm>
              <!--             删除按钮结束-->
 
-            <!--             采购管理开始-->
-             <el-button slot="reference" icon="el-icon-shopping-cart-full" type="primary">采购</el-button>
-             <!--             采购管理结束-->
+            <!--             采购按钮开始-->
+             <el-button slot="reference" icon="el-icon-shopping-cart-full" type="primary" @click="buyOneWarehouseDetailComTo(scope.row.id)" size="mini">采购</el-button>
+             <!--             采购按钮结束-->
 
            </template>
         </el-table-column>
       </el-table>
       <!--      仓库详情表结束-->
 
-      <!--      添加商品模态框开始-->
-      <el-dialog title="收货地址" :visible.sync="addComDialogVisible">
-
-        选择商品：
-        <el-table
-          ref="multipleTable"
-          :data="warehouseComTableData"
-          tooltip-effect="dark"
-          style="width: 100%"
-          @selection-change="comHandleSelectionChange"
-          @select="select"
-          @select-all="selectAll">
-          <el-table-column
-            type="selection"
-            width="55">
-          </el-table-column>
-          <el-table-column
-            label="商品名"
-            width="120">
-            <template slot-scope="scope">{{ scope.row.name }}</template>
-          </el-table-column>
-          <el-table-column
-            prop="brand"
-            label="品牌"
-            width="120">
-          </el-table-column>
-        </el-table>
-
-        设置最低库存：<el-input-number v-model="addWarehouseDetailForm.min_number" :min="1" :max="100000" label="描述文字"></el-input-number>
-
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="addComDialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="addWarehouseDetail">确 定</el-button>
-        </span>
-      </el-dialog>
-      <!--      添加商品模态框结束-->
 
     </el-dialog>
     <!--    查看详情模态框结束-->
+
+    <!--      添加商品模态框开始-->
+    <el-dialog title="添加商品" :visible.sync="addComDialogVisible">
+
+      选择商品：
+      <el-table ref="table" v-loading="warehouseComTableData.loading" size="mini" height="550"
+                :data="warehouseComTableData" border @selection-change="selectionChange">
+        <el-table-column type="selection" align="center"></el-table-column>
+        <el-table-column label="商品名" prop="name" align="center" width="120" show-overflow-tooltip></el-table-column>
+        <el-table-column label="图片"  align="center" width="150" show-overflow-tooltip>
+          <template slot-scope="scope">
+            <img :src="scope.row.img" width="60px" height="60px">
+          </template>
+        </el-table-column>
+        <el-table-column label="规格" prop="specifications" align="center" width="80"></el-table-column>
+        <el-table-column label="类型" prop="" align="center" width="80">
+          <template slot-scope="scope">
+            {{scope.row.commodityType.name}}
+          </template>
+        </el-table-column>
+        <el-table-column label="品牌" prop="address" align="center" width="120">
+          <template slot-scope="scope">
+            {{scope.row.brand.name}}
+          </template>
+        </el-table-column>
+      </el-table>
+
+      设置最低库存：<el-input-number v-model="addWarehouseDetailForm.min_number" :min="1" :max="100000" label="描述文字"></el-input-number>
+
+      <span slot="footer" class="dialog-footer">
+          <el-button @click="addComDialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="addWarehouseCommodity">确 定</el-button>
+        </span>
+    </el-dialog>
+    <!--      添加商品模态框结束-->
+
+    <!--      采购单个商品模态框开始-->
+    <el-dialog title="采购商品" :visible.sync="buyOneComDialogVisible">
+
+      采购件数：<el-input-number v-model="buyOneForm.number" :min="1" :max="100000" label="请输入采购件数"></el-input-number>
+
+      <span slot="footer" class="dialog-footer">
+          <el-button @click="buyOneComDialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="buyOneWarehouseDetailCom">确 定</el-button>
+        </span>
+    </el-dialog>
+    <!--      采购单个商品模态框结束-->
+
+    <!--      采购多个商品模态框开始-->
+    <el-dialog title="采购商品" :visible.sync="buyAllComDialogVisible" width="80%" top="0" >
+      <el-table ref="table" v-loading="warehouseComTableData.loading" size="mini" height="550"
+                :data="warehouseComTableData" border @selection-change="addAllComselectionChange">
+        <el-table-column type="selection" align="center"></el-table-column>
+        <el-table-column label="商品名" prop="name" align="center" width="120" show-overflow-tooltip></el-table-column>
+        <el-table-column label="图片"  align="center" width="150" show-overflow-tooltip>
+          <template slot-scope="scope">
+            <img :src="scope.row.img" width="60px" height="60px">
+          </template>
+        </el-table-column>
+        <el-table-column label="规格" prop="specifications" align="center" width="80"></el-table-column>
+        <el-table-column label="类型" prop="" align="center" width="80">
+          <template slot-scope="scope">
+            {{scope.row.commodityType.name}}
+          </template>
+        </el-table-column>
+        <el-table-column label="品牌" prop="address" align="center" width="120">
+          <template slot-scope="scope">
+            {{scope.row.brand.name}}
+          </template>
+        </el-table-column>
+        <el-table-column label="采购件数" prop="address" align="center" width="300">
+          <template slot-scope="scope">
+            <el-input-number  v-model="scope.row.number" :min="1" :max="100000" label="描述文字"></el-input-number>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <span slot="footer" class="dialog-footer">
+          <el-button @click="buyAllComDialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="buyAllWarehouseDetailCom">确 定</el-button>
+        </span>
+    </el-dialog>
+    <!--      采购多个商品模态框结束-->
 
   </div>
 
@@ -276,14 +308,12 @@
         data() {
           return {
             tableData:[],
-            warehouseComTableData: [
-              {id:"1",name:"康师傅方便面",brand:"康师傅"},
-              {id:"2",name:"康师傅冰红茶",brand:"康师傅"},
-              {id:"3",name:"康师傅老坛酸菜牛肉面",brand:"康师傅"},
-            ],//仓库商品详情表的添加里面的表格商品数据展示
+            warehouseComTableData: [],//仓库商品详情表的添加里面的表格商品数据展示
             dialogTableVisible: false,
             dialogFormVisible: false,
             insertdialogFormVisible:false,
+            buyOneComDialogVisible:false,//采购单个商品的模态框显示
+            buyAllComDialogVisible:false,//采购单个商品的模态框显示
             form: {
               id:'',
               name: '',
@@ -299,6 +329,11 @@
               min_number:0,
               remark:"备注",
             },//仓库详情表添加的form
+            buyOneForm:{
+              warehouseDetailId:"",
+              number:0,
+            },//采购单个商品的数据
+            buyAllForm:[],//采购多个商品的数据
             formLabelWidth: '100px',
             warehouseName:"",//查询条件
             pageindex:1,//当前第几页
@@ -363,49 +398,56 @@
             this.pageindex=1;
 
           },
-          delallto(){
-            var boolean = confirm("您确定真的要删除吗？");
-            if(boolean==true){
-              this.delall();
-            }
-          },
           delall(){
 
             var delid ="";
             var _this =this;
             var multipleSelection=_this.multipleSelection;
 
-            if(multipleSelection.length<1){
-              alert("请选中后删除！！！");
+            if(multipleSelection.length==0){
+              _this.$message.warning("请选中仓库后删除");
               return;
             }
 
-            for (var i = 0; i < multipleSelection.length; i++) {
-              delid=delid+multipleSelection[i]+",";
-            }
+            this.$confirm('您确定真的要删除吗, 是否继续?', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
 
-            var params = new URLSearchParams();
-            params.append("ids",delid);
+              for (var i = 0; i < multipleSelection.length; i++) {
+                delid=delid+multipleSelection[i]+",";
+              }
+
+              var params = new URLSearchParams();
+              params.append("ids",delid);
 
 
-            this.$axios.post("warehouse/delete.action",params).
-            then(function (result) {  //成功  执行then里面的方法
+              this.$axios.post("warehouse/delete.action",params).
+              then(function (result) {  //成功  执行then里面的方法
 
-              _thi
+                _this.$message({
+                  message: result.data,
+                  type: 'success'
+                });
 
-              s.$message({
-                message: result.data,
-                type: 'success'
+                _this.getDate();  //删除操作做完，刷新数据
+
+              }).catch(function (error) { //失败 执行catch方法
+                alert(error);
               });
 
-              _this.getDate();  //删除操作做完，刷新数据
+              //将pageindex归为1
+              this.pageindex=1;
 
-            }).catch(function (error) { //失败 执行catch方法
-              alert(error);
+            }).catch(() => {
+              this.$message({
+                type: 'info',
+                message: '已取消删除'
+              });
             });
 
-            //将pageindex归为1
-            this.pageindex=1;
+
           },
           editto(id){
             var _this = this;
@@ -488,12 +530,15 @@
             this.pageindex=val;
             this.getDate();
           },
-          onRowClick(row, event, column) {
+          onRowClick(val) {
 
+            //当选中改变时
             var _this = this;
-            _this.multipleSelection=[];
-            for (var i = 0; i < row.length; i++) {
-              _this.multipleSelection.push(row[i].id);
+
+
+            _this.multipleSelection.length=0;
+            for(let item of val){
+              _this.multipleSelection.push(item.id);
             }
 
           },
@@ -548,13 +593,13 @@
             var delIdString = "";
             var delId = _this.warehouseDetailDelId;
 
-            var bool = confirm("确认真的删除吗？");
-            if(bool==false){
+            if(delId.length==0){
+              _this.$message.warning("请选中商品后删除");
               return;
             }
 
-            if(delId.length==0){
-              alert("请选中后删除！！！");
+            var bool = confirm("确认真的删除吗？");
+            if(bool==false){
               return;
             }
 
@@ -631,13 +676,183 @@
             }
             this.addWarehouseDetailForm.commodity_id=selection[0].id;
           },
-          //添加仓库详情表的方法
-          addWarehouseDetail(){
+          //打开添加仓库商品页面的方法
+          addWarehouseCom(){
+            var _this  = this;
+
+            var params = new URLSearchParams();
+            params.append("warehouse_id",_this.warehouse_id);
+
+
+            this.$axios.post("commodity/queryComByWarehouseIdNot.action",params).
+            then(function (result) {  //成功  执行then里面的方法
+
+              var data = result.data;
+              for(var item of data){
+                item.img="../src/assets/"+item.img;
+              }
+              _this.warehouseComTableData=data;
+
+            }).catch(function (error) { //失败 执行catch方法
+
+            });
+
+            _this.addComDialogVisible=true;
+
+          },
+          //商品选中时将商品id赋值
+          selectionChange(val){
+            console.log(val);
             var _this = this;
             _this.addWarehouseDetailForm.warehouse_id=_this.warehouse_id;
-            console.log(this.addWarehouseDetailForm);
+            if(val.length>=1){
+              _this.addWarehouseDetailForm.commodity_id=val[0].id;
+              var img = val[0].img.split("/");
+              _this.addWarehouseDetailForm.img=img[3];
+            }
           },
+          //添加仓库商品
+          addWarehouseCommodity(){
 
+            var _this = this;
+
+            var params = new URLSearchParams();
+            params.append("commodity_id",_this.addWarehouseDetailForm.commodity_id);
+            params.append("warehouse_id",_this.addWarehouseDetailForm.warehouse_id);
+            params.append("img",_this.addWarehouseDetailForm.img);
+            params.append("number",_this.addWarehouseDetailForm.number);
+            params.append("min_number",_this.addWarehouseDetailForm.min_number);
+            params.append("remark",_this.addWarehouseDetailForm.remark);
+
+
+            this.$axios.post("warehouseDetail/insert.action",params).
+            then(function (result) {  //成功  执行then里面的方法
+
+              if(result.data=="添加成功"){
+                _this.$message.success(result.data);
+              }else {
+                _this.$message.error(result.data);
+              }
+
+              //关闭添加商品模态框
+              _this.addComDialogVisible=false;
+
+              _this.getWarehouseDetail();  //删除操作做完，刷新数据
+
+            }).catch(function (error) { //失败 执行catch方法
+
+            });
+
+
+          },
+          //打开单个采购模态框界面
+          buyOneWarehouseDetailComTo(id){
+            var _this = this;
+            _this.buyOneForm.warehouseDetailId=id;
+            _this.buyOneComDialogVisible=true;
+          },
+          //采购单个商品
+          buyOneWarehouseDetailCom(){
+            var  _this = this;
+
+            var params = new URLSearchParams();
+            params.append("id",_this.buyOneForm.warehouseDetailId);
+            params.append("number",_this.buyOneForm.number);
+
+
+            this.$axios.post("warehouseDetail/update.action",params).
+            then(function (result) {  //成功  执行then里面的方法
+
+              if(result.data=="修改成功"){
+                _this.$message.success("商品采购成功");
+              }else{
+                _this.$message.error("商品采购失败");
+              }
+
+              //关闭模态框
+              _this.buyOneComDialogVisible=false;
+              _this.buyOneForm.number=1;
+              _this.getWarehouseDetail();  //删除操作做完，刷新数据
+
+            }).catch(function (error) { //失败 执行catch方法
+
+            });
+
+          },
+          //打开批量采购界面
+          buyAllWarehouseDetailComTo(){
+
+            var _this  = this;
+
+            var params = new URLSearchParams();
+            params.append("warehouse_id",_this.warehouse_id);
+
+
+            this.$axios.post("commodity/queryComByWarehouseId.action",params).
+            then(function (result) {  //成功  执行then里面的方法
+
+              var data = result.data;
+              for(var item of data){
+                item.img="../src/assets/"+item.img;
+
+                item.number=1;
+              }
+              _this.warehouseComTableData=data;
+
+            }).catch(function (error) { //失败 执行catch方法
+
+            });
+
+            _this.buyAllComDialogVisible=true;
+
+          },
+          //采购多个商品表格复选框选中时
+          addAllComselectionChange(val){
+            var _this = this;
+
+            _this.buyAllForm=val;
+          },
+          //点击批量采购商品
+          buyAllWarehouseDetailCom(){
+
+
+            var  _this = this;
+
+            var buyAllComs = _this.buyAllForm;
+
+            if(buyAllComs.length==0){
+              _this.$message.warning("请选中要采购的商品");
+              return;
+            }
+
+            for(var item of buyAllComs){
+
+
+              var params = new URLSearchParams();
+              params.append("warehouse_id",_this.warehouse_id);
+              params.append("commodity_id",item.id);
+              params.append("number",item.number);
+
+
+              this.$axios.post("warehouseDetail/updateByComAndWarehouse.action",params).
+              then(function (result) {  //成功  执行then里面的方法
+
+
+                _this.$message.success("商品批量采购成功");
+                //关闭模态框
+                _this.buyAllComDialogVisible=false;
+                _this.getWarehouseDetail();  //删除操作做完，刷新数据
+
+              }).catch(function (error) { //失败 执行catch方法
+
+              });
+
+
+
+            }
+
+
+          },
         },
         watch:{
           "warehouseName":function () {
