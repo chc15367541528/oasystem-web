@@ -11,7 +11,7 @@ import 'bootstrap/dist/js/bootstrap.min'
 //导入axios
 import Axios from 'axios'
 //配置axios访问的地址
-Axios.defaults.baseURL = "http://localhost:8080/oasystem_web"
+Axios.defaults.baseURL = "http://localhost:8080/oasystem"
 // 将baseURL绑定到全局
 Vue.prototype.$axios = Axios
 
