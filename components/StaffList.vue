@@ -13,14 +13,16 @@
       @click="insertDialogFormVisible = true"
     >添加员工
     </el-button>
+<!--    批量删除-->
+    <el-button icon="el-icon-delete-solid" type="danger" size="mini" @click="delall">批量删除</el-button>
     <br>
-
     <!--表格-->
     <el-table
       :data="tableData.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
-      style="width: 100%">
+      style="width: 100%" @selection-change="onRowClick">
       <el-table-column
         label="编号"
+        type="selection"
         prop="id">
       </el-table-column>
       <el-table-column
@@ -154,6 +156,7 @@
     name: "staff",
     data() {
       return {
+        multipleSelection:[],//选中的id
         //角色下拉框
         editOptions: [],
         insertOptions: [],
@@ -231,6 +234,69 @@
         //将pageindex归为1
         this.pageindex = 1;
       },
+      delall(){
+
+        var delid ="";
+        var _this =this;
+        var multipleSelection=_this.multipleSelection;
+
+        if(multipleSelection.length==0){
+          _this.$message.warning("请选中员工后删除");
+          return;
+        }
+
+        this.$confirm('您确定真的要删除吗, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+
+          for (var i = 0; i < multipleSelection.length; i++) {
+            delid=delid+multipleSelection[i]+",";
+          }
+
+          var params = new URLSearchParams();
+          params.append("ids",delid);
+
+
+          this.$axios.post("staff/delete.action",params).
+          then(function (result) {  //成功  执行then里面的方法
+
+            _this.$message({
+              message: result.data,
+              type: 'success'
+            });
+
+            _this.getData();  //删除操作做完，刷新数据
+
+          }).catch(function (error) { //失败 执行catch方法
+            alert(error);
+          });
+
+          //将pageindex归为1
+          this.pageindex=1;
+
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+
+
+      },
+      onRowClick(val) {
+
+        //当选中改变时
+        var _this = this;
+
+
+        _this.multipleSelection.length=0;
+        for(let item of val){
+          _this.multipleSelection.push(item.id);
+        }
+
+      },
       editOpen(id) {
         var _this = this
         this.editDialogFormVisible = true;
@@ -285,7 +351,7 @@
             type: 'success'
           });
           _this.getData();  //修改操作做完，刷新数据
-          _this.insertForm.length=0;//清空表单中的数据
+          _this.insertForm={name:'', account:'', password:'', role_id:''};//清空表单中的数据
         }).catch(function (error) {
           alert(error);
         });
