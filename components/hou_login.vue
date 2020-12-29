@@ -69,7 +69,7 @@
             if (result.data.code == "0") {
               //登录成功  跳转 首页
               alert(result.data.msg);
-              sessionStorage.setItem("account", result.data.account)
+              sessionStorage.setItem("staffAccount", result.data.account)
               sessionStorage.setItem("staffid", result.data.id)
               _this.$router.push("/index2");
             } else {

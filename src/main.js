@@ -1,7 +1,5 @@
 import Vue from 'vue'
 import App from './App.vue'
-import Login from '../components/UserLogin.vue'
-import Index2 from "./index2.vue";
 
 //导入bootstrap
 import 'bootstrap/dist/css/bootstrap.min.css'
