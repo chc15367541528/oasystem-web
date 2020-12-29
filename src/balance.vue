@@ -1,5 +1,5 @@
 <template>
-  <div class="detail">
+  <div class="balance">
     <!--顶部-->
     <div style="height: 115px">
       <div class="head">
@@ -39,62 +39,49 @@
     <!--主体-->
     <div id="box">
       <div class="container">
-        <!--左侧图片-->
-        <div class="goods_img_box">
-          <div class="goods_img_max">
-            <div class="goods_img_max_img" :style="imageData[0].img"></div>
-          </div>
-
-          <div class="goods_img_min_box" v-for="item in imageData">
-            <div class="goods_img_min" @mouseover="imageShow(item.img)"
-                 :style="item.img">
+        <!--商品信息-->
+        <div class="row">
+          <div class="car_xx" v-for="(item,index) in commodityData">
+            <div class="car_xx_top">
+              <div class="car_xx_top_left">
+                <img :src="item.img" class="car_img"><br/>
+                <span class="car_xx_top_left_span">*图片仅供参考,请以实物为准</span>
+              </div>
+              <div class="car_xx_top_right">
+                <p class="car_name_p">{{item.name}}</p>
+                <p class="car_xx_p">品牌：{{brandData[index].name}}&emsp;颜色：{{colorData[index].color}}&emsp;版本：{{versionData[index].version}}</p>
+              </div>
+              <span class="goods_num">x{{numbers[index]}}</span>
+            </div>
+            <div class="car_xx_bottom">
+              <!--发票信息-->
+              <div class="car_xx_bottom_left">
+                <span class="car_xx_title">发票信息</span>
+                <span class="car_xx_fp">电子普通发票&emsp;&emsp;个人</span>
+                <span class="car_xx_fpxx">注：如果商品由第三方卖家销售，发票内容由其卖家决定，发票由卖家开具并寄出</span>
+              </div>
+              <!--价格信息-->
+              <div class="car_xx_bottom_right">
+                <span class="goods_price_box">商品单价:<span class="goods_price">￥{{price[index]}}</span></span>
+                <span class="goods_num_box_price">商品数量:<span class="goods_num_price">x{{numbers[index]}}</span></span>
+                <span class="goods_sumPrice_box">结算金额:<span class="goods_sumPrice">￥{{sumPrice[index]}}</span></span>
+              </div>
             </div>
           </div>
         </div>
-        <!--右侧信息-->
-        <div class="goods_message_box">
-          <!--名称和备注-->
-          <div class="goods_name_box">
-            <span class="goods_name">{{commodityData.name}}</span>
-            <span class="goods_remark">{{commodityData.remark}}</span>
-          </div>
-          <!--价格-->
-          <div class="goods_price_box">
-            <span class="goods_price">￥<span>{{price}}</span></span>
-            <span class="jiFen_title">积分</span>
-            <span class="jiFen_span">购物送积分</span>
-          </div>
-          <!--颜色-->
-          <div class="goods_color_box">
-            <span class="color_title">颜色</span>
-            <div class="color_boxs">
-              <div class="color_div" v-for="item in colorData">
-                <span class="color_box" @click="colorChange($event,item.id)">{{item.color}}</span>
-              </div>
+        <!--底部付款-->
+        <div class="row">
+          <div id="fuKuan_box">
+            <div id="fuKuan_box_left">
+              <input type="checkbox" id="fuKuan_box_checkbox" checked/>
+              <span id="fuKuan_box_left_text">已阅读并同意</span>
+              <a id="fuKuan_box_left_a">《速客数码购物条例》</a>
             </div>
-          </div>
-          <!--版本-->
-          <div class="goods_version_box">
-            <span class="version_title">版本</span>
-            <div class="version_boxs">
-              <div class="version_div" v-for="item in versionData">
-                <span class="version_box" @click="versionChange($event,item.id,item.price)">{{item.version}}</span>
-              </div>
+            <div id="fuKuan_box_right">
+              <button id="fuKuan_box_btn" @click="addOrder">提交订单</button>
+              <span id="fuKuan_box_price">￥{{sumPrices}}</span>
+              <span id="fuKuan_box_right_text">现在下单只需支付</span>
             </div>
-          </div>
-          <!--数量-->
-          <div class="goods_num_box">
-            <span class="num_title">数量</span>
-            <div class="num_box">
-              <a class="num_btn" id="btn_jian" @click="btn_jian"></a>
-              <input class="goods_num" value="1" readonly/>
-              <a class="num_btn" id="btn_jia" @click="btn_jia"></a>
-            </div>
-          </div>
-          <!--按钮操作-->
-          <div class="goods_btn_box">
-            <button class="goods_btn" @click="addCar" id="add_car">加入购物车</button>
-            <button class="goods_btn" id="pay_btn" @click="$router.push('/balance?commodityId='+commodity_id+'&numbers='+numbers+'&colorId='+colorId+'&versionId='+versionId) ">立即购买</button>
           </div>
         </div>
       </div>
@@ -222,6 +209,15 @@
         </div>
       </div>
     </div>
+
+
+
+    <!-- 添加模态框-->
+    <el-dialog id="paydialog" title="支付" :visible.sync="dialogFormVisible">
+      <div id="mydiv">
+
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -229,224 +225,279 @@
   import $ from 'jQuery';
 
   export default {
-    name: "detail",
+    name: "balance",
     data() {
       return {
-        commodityData: {},
-        imageData: [],
+        account: 0,
+        user_id:0,
+        merchants:0,
+        price:[],
+        sumPrice:[],
+        sumPrices:0.0,
+        numbers: [],
+        brandData:[],
+
+        commodity_id: [],
+        commodityData: [],
+        colorId: [],
         colorData: [],
+        versionId: [],
         versionData: [],
-        commodity_id: 0,
-        numbers: 1,
-        colorId: 0,
-        versionId: 0,
-        price: 0,
-        account:0,
+
+        tradeno:"",
+        tradename:"",
+        dialogFormVisible:false
+
       }
     },
     created() {
-      this.getDate();
+      this.getData();
+      this.queryByAccount(sessionStorage.getItem("account"));
     },
     methods: {
-      getDate() {
-        var _this = this;
+      /*根据账号查询用户*/
+      queryByAccount:function(account){
+        var _this=this;
 
-        if (sessionStorage.getItem("account")!=null&&sessionStorage.getItem("account")!=undefined&&sessionStorage.getItem("account")!=""){
-          _this.account=sessionStorage.getItem("account");
+        var params = new URLSearchParams();
+        params.append('account', account);
+
+        _this.$axios.post("user/queryByAccount.action", params).then(function (result) {  //成功  执行then里面的方法
+          var str = JSON.stringify(result.data).toString();
+          _this.user_id= str.match(/id":(\S*),"account/)[1];
+          _this.merchants=str.match(/user_id":(\S*),"balance/)[1];
+        }).catch(function () { //失败 执行catch方法
+
+        });
+      },
+      /*获取时间*/
+      getDate(data){
+        var date = new Date();
+
+        var y= date .getFullYear(); //获取完整的年份(4位)
+        var m=date .getMonth()+1; //获取当前月份(0-11,0代表1月)
+        var d=date .getDate(); //获取当前日(1-31)
+        var h=date .getHours(); //获取当前小时数(0-23)
+        var mi= date .getMinutes(); //获取当前分钟数(0-59)
+        var s= date .getSeconds(); //获取当前秒数(0-59)
+        var ms= date .getMilliseconds(); //获取当前毫秒数(0-999)
+
+        if (m<10){
+          m="0"+m;
+        }
+        if (d<10){
+          d="0"+d;
+        }
+        if (h<10){
+          h="0"+h;
+        }
+        if (mi<10){
+          mi="0"+mi;
+        }
+        if (s<10){
+          s="0"+s;
+        }
+
+        if (data==1){
+          return y.toString()+m.toString()+d.toString()+h.toString()+mi.toString()+s.toString()+ms.toString();
         }else {
-          _this.account=0;
+          return y.toString()+"-"+m.toString()+"-"+d.toString()+" "+h.toString()+":"+mi.toString()+":"+s.toString();
         }
 
-        _this.commodity_id = _this.getUrlKey("id");
-        //商品查询
-        var params = new URLSearchParams();
-        params.append('id', _this.commodity_id);
-        this.$axios.post("commodity/queryById.action", params).then(function (result) {  //成功  执行then里面的方法
 
-          var data = result.data;
 
-          _this.commodityData = data;
-
-          _this.colorQuery(data.id);
-
-          _this.versionQuery(data.id);
-
-          _this.imgQuery(data.id);
-        }).catch(function () { //失败 执行catch方法
-
-        });
-      },
-      /*颜色查询*/
-      colorQuery: function (id) {
-        var _this = this;
-
-        //颜色查询
-        var params = new URLSearchParams();
-        params.append('commodity_id', id);
-
-        this.$axios.post("colorInfo/queryAll.action", params).then(function (result) {  //成功  执行then里面的方法
-          _this.colorData = result.data;
-        }).catch(function () { //失败 执行catch方法
-
-        });
-      },
-      /*版本查询*/
-      versionQuery: function (id) {
-        var _this = this;
-
-        var params = new URLSearchParams();
-        params.append('commodity_id', id);
-
-        this.$axios.post("versionInfo/queryAll.action", params).then(function (result) {  //成功  执行then里面的方法
-          _this.versionData = result.data;
-          _this.price = result.data[0].price;
-        }).catch(function () { //失败 执行catch方法
-
-        });
-      },
-      /*图片查询*/
-      imgQuery: function (id) {
-        var _this = this;
-
-        var params = new URLSearchParams();
-        params.append('commodity_id', id);
-
-        this.$axios.post("imgInfo/queryAll.action", params).then(function (result) {  //成功  执行then里面的方法
-
-          var data = result.data;
-
-          for (var item of data) {
-            item.img = "background-image: url('src/img/telePhone/" + item.img + "')";
-          }
-
-          _this.imageData = data;
-
-        }).catch(function () { //失败 执行catch方法
-
-        });
-      },
-      /*图片显示*/
-      imageShow: function (img) {
-        var image = img.slice(23);
-        let index = image.lastIndexOf("'")
-        image = image.substring(0, index);
-
-        $(".goods_img_max_img").css("background-image", "url('" + image + "')")
-      },
-      /*数量减*/
-      btn_jian: function () {
-        var _this = this;
-        var number = parseInt($(".goods_num").val());
-        if (number != 1) {
-          number = number - 1;
-          $(".goods_num").val(number);
-        }
-        _this.numbers = number;
-      },
-      /*数量加*/
-      btn_jia: function () {
-        var _this = this;
-        var number = parseInt($(".goods_num").val());
-        number = number + 1;
-        $(".goods_num").val(number);
-        _this.numbers = number;
-      },
-      /*选择颜色*/
-      colorChange: function (event, id) {
-        var _this = this;
-        _this.colorId = id;
-
-        $(".color_box").css("border", "");
-        $(".color_box").css("color", "");
-        var el = event.currentTarget;
-        $(el).css("border", "red dashed 1px");
-        $(el).css("color", "red");
-      },
-      /*选择版本*/
-      versionChange: function (event, id, price) {
-        var _this = this;
-        _this.versionId = id;
-        _this.price = price;
-
-        $(".version_box").css("border", "");
-        $(".version_box").css("color", "");
-
-        var el = event.currentTarget;
-        $(el).css("border", "red solid 1px");
-        $(el).css("color", "red");
-      },
-      /*加入购物车*/
-      addCar: function () {
-        var _this = this;
-        var image = _this.imageData[0].img.slice(41);
-        let index = image.lastIndexOf("'")
-        image = image.substring(0, index);
-
-        if (_this.colorId == 0) {
-          _this.$message({
-            message: '请选择颜色信息',
-            type: 'warning'
-          });
-        } else if (_this.versionId == 0) {
-          _this.$message({
-            message: '请选择版本信息',
-            type: 'warning'
-          });
-        } else {
-          var params = new URLSearchParams();
-
-          params.append('user_id', "1");
-          params.append('commodity_id', _this.commodity_id);
-          params.append('color_id', _this.colorId);
-          params.append('version_id', _this.versionId);
-          params.append('commodity_img', image);
-          params.append('number', _this.numbers);
-
-          this.$axios.post("shoppingCar/insert.action", params).then(function (result) {  //成功  执行then里面的方法
-            const h = _this.$createElement;
-
-            _this.$notify({
-              title: result.data,
-              message: h('i', {style: 'color: gray;font-style:normal'}, "已为您将 "+$(".goods_name").text()+" 添加至购物车")
-            });
-
-          }).catch(function () { //失败 执行catch方法
-
-          });
-        }
-      },
-
-      handleScroll(e){
-        var scrollTop = e.target.documentElement.scrollTop || e.target.body.scrollTop;      // 执行代码
       },
 
       getUrlKey(name) {
         return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.href) || [, ""])[1].replace(/\+/g, '%20')) || null
       },
-    },
-    mounted(){
-      window.addEventListener('scroll',this.handleScroll,true)
+      /*获取数据*/
+      getData() {
+        var _this = this;
+
+        if (_this.$route.query.colorDatas==null||_this.$route.query.colorDatas==""||_this.$route.query.colorDatas==undefined||_this.$route.query.colorDatas.length==0){
+          _this.commodity_id.push(_this.getUrlKey("commodityId")) ;
+          _this.numbers.push(_this.getUrlKey("numbers")) ;
+          _this.colorId.push(_this.getUrlKey("colorId")) ;
+          _this.versionId.push(_this.getUrlKey("versionId")) ;
+        }else {
+          _this.colorId=_this.$route.query.colorDatas;
+          _this.versionId=_this.$route.query.versionDatas;
+          _this.numbers=_this.$route.query.numberDatas;
+          _this.commodity_id=_this.$route.query.commodity_idDatas;
+        }
+
+        _this.account = sessionStorage.getItem("account");
+
+        //商品查询
+        for (var i = 0; i < _this.commodity_id.length; i++) {
+          _this.colorQuery(_this.colorId[i]);
+
+          _this.versionQuery(_this.versionId[i],i);
+
+          var params = new URLSearchParams();
+          params.append('id', _this.commodity_id[i]);
+          this.$axios.post("commodity/queryById.action", params).then(function (result) {  //成功  执行then里面的方法
+
+            var data = result.data;
+
+            data.img = "src/img/telePhone/" + data.img ;
+
+            _this.commodityData.push(data);
+
+            _this.brandQuery(data.brand.id);
+
+          }).catch(function () { //失败 执行catch方法
+
+          });
+        }
+
+      },
+      /*颜色查询*/
+      colorQuery: function (id) {
+        var _this = this;
+        //颜色查询
+        var params = new URLSearchParams();
+        params.append('id', id);
+
+        _this.$axios.post("colorInfo/queryById.action", params).then(function (result) {  //成功  执行then里面的方法
+          _this.colorData.push(result.data);
+        }).catch(function () { //失败 执行catch方法
+
+        });
+      },
+      /*版本查询*/
+      versionQuery: function (vid,index) {
+        var _this = this;
+
+        var params = new URLSearchParams();
+        params.append('id', vid);
+
+        _this.$axios.post("versionInfo/queryById.action", params).then(function (result) {  //成功  执行then里面的方法
+          _this.versionData.push(result.data);
+          _this.price.push(result.data.price);
+
+          var sumPrice;
+          sumPrice=parseFloat(parseInt(_this.numbers[index])*parseFloat(result.data.price));
+
+          var sumPrices=_this.sumPrices;
+          sumPrices=sumPrices+sumPrice;
+
+          _this.sumPrice.push(sumPrice);
+          _this.sumPrices=sumPrices;
+        }).catch(function () { //失败 执行catch方法
+
+        });
+      },
+      /*品牌查询*/
+      brandQuery:function(id){
+        var _this = this;
+
+        var params = new URLSearchParams();
+        params.append('id', id);
+
+        _this.$axios.post("brand/queryById.action", params).then(function (result) {  //成功  执行then里面的方法
+          _this.brandData.push(result.data);
+        }).catch(function () { //失败 执行catch方法
+
+        });
+      },
+      /*提交订单*/
+      pay(){
+
+        var params = new URLSearchParams();
+        params.append("tradeno",this.tradeno);  //订单号
+        params.append("price",this.sumPrices);    //价格
+        params.append("tradename",this.tradename);  //订单名字
+
+        this.$axios.post("pay.action",params).then(function (result) {
+
+          var bodystr = result.data;  //后端返回的支付页面代码
+          console.log(bodystr)
+          bodystr=bodystr.substr(0,bodystr.indexOf("<script>"));
+          console.log(bodystr)
+          document.getElementById("mydiv").innerHTML=bodystr;
+          document.forms[0].submit();   //返回代码中需要表单提交得到真实的支付页面
+
+        }).catch();
+
+        this.dialogFormVisible=true;
+      }
+      ,
+      addOrder:function(){
+        var _this=this;
+        /*设置订单号*/
+        for (var i = 0; i < _this.commodity_id.length; i++) {
+
+          //
+          _this.tradename=_this.commodityData[i].name+"/";
+
+          var orderNum="sk"+_this.getDate(1)+_this.commodity_id[i];
+
+          //
+          _this.tradeno=orderNum;
+
+          var params = new URLSearchParams();
+
+          var img=_this.commodityData[i].img.substring(18);
+
+          params.append('order_number', orderNum);
+          params.append('user_id', _this.user_id);
+          params.append('merchants_id', _this.merchants);
+          params.append('commodity_id', _this.commodity_id[i]);
+          params.append('color', _this.colorData[i].color);
+          params.append('version', _this.versionData[i].version);
+          params.append('img', img);
+          params.append('price', _this.price[i]);
+          params.append('number', _this.numbers[i]);
+          params.append('totalmoney', _this.sumPrice[i]);
+          params.append('createtime', _this.getDate(2));
+
+          _this.$axios.post("userOrder/insert.action", params).then(function (result) {  //成功  执行then里面的方法
+            const h = _this.$createElement;
+
+            _this.$notify({
+              title: "提交成功",
+              message: h('i', {style: 'color: gray;font-style:normal'}, "已为您提交订单，请及时付款")
+            });
+          }).catch(function () { //失败 执行catch方法
+
+          });
+
+        }
+
+        _this.tradename=_this.tradename.substr(0,_this.tradename.length-2);
+
+        //调用支付宝沙箱的支付功能
+        _this.pay();
+
+      },
     },
   }
 </script>
 
 <style scoped>
-  .detail {
+  #box {
+    background-color: #f0f3f7;
+    padding-bottom: 20px;
+  }
+
+  /*顶部样式*/
+  .balance {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
+    text-align: left;
+    background-color: #f0f3f7;
   }
 
-  /*顶部样式*/
   .head {
     width: 100%;
     height: 36px;
     line-height: 36px;
     background-color: rgba(0, 0, 0, .8);
-    position: fixed;
-    z-index: 999;
   }
 
   .s-sub {
@@ -501,7 +552,7 @@
     width: 100%;
     height: 80px;
     background-color: white;
-    position: fixed;
+    position: absolute;
     z-index: 999;
     top: 35px;
     margin-bottom: 80px;
@@ -663,306 +714,228 @@
     text-decoration: none;
   }
 
-  .goods_img_box {
-    width: 40%;
-    height: 600px;
-    position: absolute;
-    padding-top: 35px;
-    bottom: 40px;
+  .car_xx {
+    background-color: white;
+    width: 100%;
+    height: 320px;
+    margin-top: 15px;
+    padding: 10px 20px 10px 20px;
+    border-radius: 10px;
   }
 
-  .goods_message_box {
-    width: 60%;
-    height: auto;
-    float: right;
-    padding-left: 200px;
+  .car_xx_top {
+    width: 100%;
+    height: 50%;
+    border-bottom: lightgray solid 1px;
   }
 
-  .goods_img_max {
+  .car_xx_top_left {
+    height: 100%;
+    width: 200px;
     float: left;
-    width: 100%;
-    height: 456px;
-    text-align: center;
-  }
-  .goods_img_max_img{
-    width: 456px;
-    height: 456px;
-    background-size: 100% 100%;
   }
 
-  .goods_img_min_box {
-    float: left;
-    width: 114px;
-    height: 94px;
-    text-align: center;
-    padding-top: 7px;
+  .car_img {
+    height: 120px;
+    width: 120px;
+    float: top;
   }
 
-  .goods_img_min {
-    width: 80px;
-    height: 80px;
-    background-size: 100% 100%;
-    margin: auto;
-    border: transparent solid 1px;
-    cursor: pointer;
-    transition: .3s;
-  }
-
-  .goods_img_min:hover {
-    transition: .3s;
-    border: lightgray solid 1px;
-  }
-
-  .goods_name_box {
-    text-align: left;
-    width: 100%;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    border-bottom: rgba(0, 0, 0, .1) solid 1px;
-  }
-
-  .goods_name {
-    display: inline-block;
-    width: 100%;
-    height: auto;
-    font-size: 30px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-  }
-
-  .goods_remark {
-    display: inline-block;
-    width: 100%;
-    height: auto;
+  .car_xx_top_left_span {
+    float: top;
+    font-size: 10px;
     color: gray;
   }
 
-  .goods_price_box {
-    width: 100%;
-    height: 100px;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    border-bottom: rgba(0, 0, 0, .1) solid 1px;
-  }
-
-  .goods_price {
-    text-align: left;
-    padding-left: 15px;
-    display: inline-block;
-    font-size: 30px;
-    color: red;
-    width: 50%;
-    border-right: rgba(0, 0, 0, .1) solid 1px;
-    margin-top: 10px;
-    float: left;
-  }
-
-  .jiFen_title {
-    float: left;
-    display: inline-block;
-    font-size: 12px;
-    padding: 2px 5px 2px 5px;
-    background-color: red;
-    color: white;
-    border-radius: 3px;
-    margin-top: 22px;
-    margin-left: 10px;
-    cursor: pointer;
-    line-height: 16px;
-  }
-
-  .jiFen_span {
-    float: left;
-    display: inline-block;
-    margin-top: 22px;
-    margin-left: 10px;
-  }
-
-  .goods_color_box {
-    width: 100%;
-    padding-top: 20px;
-    padding-bottom: 20px;
-  }
-
-  .color_title {
-    text-align: left;
-    padding-left: 15px;
-    display: inline-block;
-    width: 100%;
-    float: left;
-  }
-
-  .color_boxs {
-    width: 100%;
-    float: left;
-    padding-bottom: 20px;
-  }
-
-  .color_div {
-    float: left;
-    width: 50%;
-    height: 50px;
-    padding-left: 10px;
-    padding-right: 10px;
-    margin-top: 20px;
-  }
-
-  .color_box {
-    display: inline-block;
-    width: 100%;
+  .car_xx_top_right {
     height: 100%;
-    line-height: 50px;
-    border-radius: 5px;
-    text-align: center;
+    width: 637px;
+    float: left;
+  }
+
+  .car_name_p {
+    font-size: 23px;
+    margin-top: 40px;
+  }
+
+  .car_xx_p {
     color: gray;
-    border: lightgray dashed 1px;
-    cursor: pointer;
-  }
-
-  .color_box:hover {
-    color: red;
-  }
-
-  .goods_version_box {
-    width: 100%;
-    padding-top: 20px;
-    padding-bottom: 20px;
-  }
-
-  .version_title {
-    text-align: left;
-    padding-left: 15px;
-    display: inline-block;
-    width: 100%;
-    float: left;
-  }
-
-  .version_boxs {
-    width: 100%;
-    float: left;
-    padding-bottom: 20px;
-  }
-
-  .version_div {
-    float: left;
-    width: 50%;
-    height: 50px;
-    padding-left: 10px;
-    padding-right: 10px;
-    margin-top: 20px;
-  }
-
-  .version_box {
-    display: inline-block;
-    width: 100%;
-    height: 100%;
-    line-height: 50px;
-    border-radius: 5px;
-    text-align: center;
-    color: gray;
-    border: lightgray solid 1px;
-    cursor: pointer;
-  }
-
-  .version_box:hover {
-    color: red;
-  }
-
-  .goods_num_box {
-    float: left;
-    width: 100%;
-    height: auto;
-    padding-top: 20px;
-    padding-bottom: 20px;
-  }
-
-  .num_title {
-    text-align: left;
-    padding-left: 15px;
-    display: inline-block;
-    width: 100%;
-    float: left;
-  }
-
-  .num_box {
-    width: 222px;
-    height: 50px;
-    float: left;
-    margin-top: 20px;
-    margin-left: 10px;
-    border: lightgray solid 1px;
-    border-radius: 5px;
-    overflow: hidden;
-  }
-
-  .num_btn {
-    display: inline-block;
-    height: 100%;
-    width: 50px;
-    background-color: transparent;
-    outline: none;
-    text-decoration: none;
-    cursor: pointer;
-  }
-
-  #btn_jian {
-    border-right: lightgray solid 1px;
-    float: left;
-    background: no-repeat url("img/icon/减.png") center;
-    background-size: 30% 30%;
-  }
-
-  #btn_jian:hover {
-    background: no-repeat url("img/icon/减 (1).png") center;
-    background-size: 30% 30%;
-  }
-
-  #btn_jia {
-    border-left: lightgray solid 1px;
-    float: right;
-    background: no-repeat url("img/icon/加.png") center;
-    background-size: 30% 30%;
-  }
-
-  #btn_jia:hover {
-    background: no-repeat url("img/icon/加 (1).png") center;
-    background-size: 30% 30%;
   }
 
   .goods_num {
-    height: 100%;
-    width: 118px;
-    border: none;
-    text-align: center;
-    line-height: 50px;
-    outline: none;
+    display: inline-block;
+    line-height: 150px;
+    float: right;
+    margin-right: 20px;
   }
 
-  .goods_btn_box {
-    float: left;
+  .car_xx_bottom {
+    height: 50%;
     width: 100%;
-    height: auto;
     padding-top: 20px;
     padding-bottom: 20px;
   }
 
-  .goods_btn {
-    margin-left: 10px;
-    width: 222px;
-    height: 50px;
+  .car_xx_bottom_left {
+    float: left;
+    height: 100%;
+    width: 50%;
+    border-right: lightgray solid 1px;
+  }
+
+  .car_xx_title {
+    display: inline-block;
+    width: 100%;
+    height: 30px;
+    float: left;
+    line-height: 30px;
     font-size: 18px;
-    border: none;
-    outline: none;
-    border-radius: 5px;
-    color: white;
   }
 
-  #add_car {
-    background-color: rgb(100, 100, 100);
+  .car_xx_fp {
+    float: left;
+    display: inline-block;
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+    font-size: 13px;
+    margin-top: 10px;
   }
 
-  #pay_btn {
-    background-color: orangered;
+  .car_xx_fpxx {
+    display: inline-block;
+    width: 100%;
+    float: left;
+    font-size: 12px;
+    color: gray;
+    margin-top: 10px;
+    padding-right: 20px;
+  }
+
+  .car_xx_bottom_right {
+    float: left;
+    height: 100%;
+    width: 50%;
+  }
+
+  .goods_price_box {
+    display: inline-block;
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+    padding-left: 20px;
+  }
+
+  .goods_price {
+    color: red;
+    margin-left: 20px;
+  }
+
+  .goods_num_box_price {
+    display: inline-block;
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+    padding-left: 20px;
+  }
+
+  .goods_num_price {
+    color: red;
+    margin-left: 20px;
+  }
+
+  .goods_sumPrice_box {
+    display: inline-block;
+    text-align: right;
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    padding-right: 20px;
+  }
+
+  .goods_sumPrice {
+    color: red;
+    margin-left: 20px;
+    font-size: 25px;
+  }
+
+  #fuKuan_box {
+    width: 100%;
+    height: 70px;
+    background-color: white;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    padding-right: 10px;
+  }
+
+  #fuKuan_box_left {
+    height: 100%;
+    width: 40%;
+    float: left;
+  }
+
+  #fuKuan_box_checkbox {
+    margin-top: 28px;
+    float: left;
     margin-left: 15px;
+  }
+
+  #fuKuan_box_left_text {
+    float: left;
+    margin-left: 5px;
+    line-height: 70px;
+  }
+
+  #fuKuan_box_left_a {
+    float: left;
+    line-height: 70px;
+    color: dodgerblue;
+  }
+
+  #fuKuan_box_right {
+    height: 100%;
+    width: 60%;
+    float: left;
+  }
+
+  #fuKuan_box_right_text {
+    display: block;
+    font-size: 12px;
+    color: gray;
+    width: 48px;
+    height: 24px;
+    float: right;
+    margin-top: 18px;
+    margin-right: 5px;
+  }
+
+  #fuKuan_box_price {
+    font-size: 24px;
+    color: orangered;
+    float: right;
+    margin-right: 10px;
+    font-weight: bold;
+    margin-top: 18px;
+  }
+
+  #fuKuan_box_btn {
+    background-color: rgb(50, 50, 50);
+    color: white;
+    float: right;
+    border: none;
+    margin-right: 5px;
+    width: 170px;
+    height: 50px;
+    margin-top: 10px;
+    border-radius: 3px;
+    transition: .3s;
+    outline: none;
+    font-size: 18px;
+  }
+
+  #fuKuan_box_btn:hover {
+    background-color: gray;
+    transition: .3s;
   }
 </style>
