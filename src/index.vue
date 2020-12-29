@@ -3,7 +3,7 @@
     <!--顶部-->
     <div style="height: 115px">
       <div class="head">
-        <div class="container">
+        <div style="width: 1170px;margin: auto">
           <div class="s-sub">
             <a class="head-left" href="index.html">首页</a>
             <a class="head-left" href="index.html">速客官网</a>
@@ -14,15 +14,15 @@
             </span>
 
             <a class="head-right" href="javascript:;" v-show="account!=0">欢迎你， {{account}}</a>
-            <a class="head-right" href="javascript:;" v-show="account==0">注册</a>
-            <a class="head-right" href="javascript:;">我的订单</a>
+            <a class="head-right" href="javascript:;" @click="$router.push('/register')" v-show="account==0">注册</a>
+            <a class="head-right" href="javascript:;" @click="$router.push('/datum')">个人中心</a>
             <a class="head-right" href="javascript:;" @click="$router.push('/cart')">购物车</a>
           </div>
         </div>
       </div>
       <!--顶部logo/搜索框-->
       <div class="box-top">
-        <div class="container">
+        <div style="width: 1170px;margin: auto">
           <div class="row">
             <a href="index.html" class="logo"></a>
             <div class="search-top">

@@ -1,80 +1,120 @@
 <template>
   <div class="cart">
-
-    <!-- 购物车 -->
-    <div id="shopping-cart" class="page-shopping-cart">
-      <h4 class="cart-title">购物清单</h4>
-    <el-table
-      :data="tableData"
-      style="width: 100%"
-      @selection-change="handleSelectionChange"
-    >
-      <el-table-column type="selection"  width="100" align="center"></el-table-column>
-      <el-table-column label="商" width="100" align="right">
-        <template slot-scope="scope">
-          <img :src="scope.row.commodity.img" width="98" height="98" alt="">
-        </template>
-      </el-table-column>
-      <el-table-column label="品" width="400" align="left" class="td-product">
-        <template slot-scope="scope">
-          <div class="product-info">
-            <h6 style="display: inline-block;width: 300px;">{{scope.row.commodity.name}}</h6>
-            <p>品牌：{{scope.row.commodity.brand.name}}&nbsp;&nbsp;颜色:{{scope.row.colorInfo.color}}&nbsp;&nbsp;</p>
-            <p>版本：{{scope.row.versionInfo.version}}</p>
+    <!--顶部-->
+    <div style="height: 115px">
+      <div class="head">
+        <div style="width: 1170px;margin: auto">
+          <div class="s-sub">
+            <a class="head-left" href="index.html">首页</a>
+            <a class="head-left" href="index.html">速客官网</a>
           </div>
-          <div class="clearfix"></div>
-        </template>
-      </el-table-column>
-      <el-table-column label="数量" align="center" width="192">
-        <template slot-scope="scope">
-          <el-input-number v-model="scope.row.number" :min="1" :max="10" label="描述文字"></el-input-number>
-        </template>
-      </el-table-column>
-      <el-table-column  label="单价(元)" align="center">
-        <template slot-scope="scope">
-          <p class="red-text">￥<span class="price-text">{{scope.row.versionInfo.price}}</span>.00</p>
-        </template>
-      </el-table-column>
-      <el-table-column  label="金额(元)" align="center">
-        <template slot-scope="scope">
-          <p class="red-text">￥<span class="price-text">{{scope.row.number*scope.row.versionInfo.price}}</span>.00</p>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" align="center">
-        <template slot-scope="scope">
+          <div class="s-main">
+            <span v-show="account==0" class="head-right">您好，请
+              <a href="javascript:;" style="color: white" @click="$router.push('/userLogin')">登录</a>
+            </span>
 
-          <!--        删除按钮开始-->
-          <el-popconfirm
-            confirm-button-text='确认'
-            cancel-button-text='取消'
-            icon="el-icon-info"
-            icon-color="red"
-            title="确定移除该商品吗？"
-            @confirm="delOne(scope.row.id)"
-          >
-            <el-button slot="reference" icon="el-icon-delete-solid" type="danger" size="mini">删除</el-button>
-          </el-popconfirm>
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <!-- 最后一行统计 -->
-    <div class="cart-product-info">
-      <a href="javascript:;" class="delete-product" @click="delchecked"><span></span>删除所选商品</a>
-      <a href="#" class="keep-shopping" @click="keepShopping"><span></span>继续购物</a>
-      <a href="javascript:;" class="fr btn-buy" @click="bug">去结算</a>
-      <a href="javascript:;" class="fr product-total">￥<span>{{totalPrice}}</span></a>
-      <a href="javascript:;" class="fr check-num"><span>{{totalNumber}}</span>件商品总计（不含运费）:</a>
-    </div>
+            <a class="head-right" href="javascript:;" v-show="account!=0">欢迎你， {{account}}</a>
+            <a class="head-right" href="javascript:;" @click="$router.push('/register')" v-show="account==0">注册</a>
+            <a class="head-right" href="javascript:;" @click="$router.push('/datum')">个人中心</a>
+            <a class="head-right" href="javascript:;" @click="$router.push('/cart')">购物车</a>
+          </div>
+        </div>
+      </div>
+      <!--顶部logo/搜索框-->
+      <div class="box-top">
+        <div style="width: 1170px;margin: auto">
+          <div class="row">
+            <a href="index.html" class="logo"></a>
+            <div class="search-top">
+              <input placeholder="华为 Mate 40 Pro 5G" class="search-top-ipt"/>
+              <a class="a-search" href="javascript:;">
+                <img class="icon-search" src="src/img/icon/搜索.png"/>
+              </a>
+            </div>
+          </div>
+        </div>
 
       </div>
+    </div>
+    <!-- 购物车 -->
+    <div class="box">
+      <div id="shopping-cart" class="page-shopping-cart">
+        <span class="cart-title">购物清单</span>
+        <el-table
+          :data="tableData"
+          empty-text="您的购物车没有商品呢，快去逛逛吧！"
+          style="width: 100%"
+          @selection-change="handleSelectionChange"
+        >
+          <el-table-column type="selection" width="100" align="center"></el-table-column>
+          <el-table-column label="商" width="100" align="right">
+            <template slot-scope="scope">
+              <img :src="scope.row.commodity.img" width="98" height="98" alt="">
+            </template>
+          </el-table-column>
+          <el-table-column label="品" width="400" align="left" class="td-product">
+            <template slot-scope="scope">
+              <div class="product-info">
+                <h5 style="display: inline-block;width: 300px;">{{scope.row.commodity.name}}</h5>
+                <p>品牌：{{scope.row.commodity.brand.name}}&nbsp;&nbsp;颜色:{{scope.row.colorInfo.color}}&nbsp;&nbsp;</p>
+                <p>版本：{{scope.row.versionInfo.version}}</p>
+              </div>
+              <div class="clearfix"></div>
+            </template>
+          </el-table-column>
+          <el-table-column label="数量" align="center" width="192">
+            <template slot-scope="scope">
+              <el-input-number v-model="scope.row.number" :min="1" label="描述文字"></el-input-number>
+            </template>
+          </el-table-column>
+          <el-table-column label="单价(元)" align="center">
+            <template slot-scope="scope">
+              <p class="red-text">￥<span class="price-text">{{scope.row.versionInfo.price}}</span>.00</p>
+            </template>
+          </el-table-column>
+          <el-table-column label="金额(元)" align="center">
+            <template slot-scope="scope">
+              <p class="red-text">￥<span class="price-text">{{scope.row.number*scope.row.versionInfo.price}}</span>.00
+              </p>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" align="center">
+            <template slot-scope="scope">
 
+              <!--        删除按钮开始-->
+              <el-popconfirm
+                confirm-button-text='确认'
+                cancel-button-text='取消'
+                icon="el-icon-info"
+                icon-color="red"
+                title="确定移除该商品吗？"
+                @confirm="delOne(scope.row.id)"
+              >
+                <el-button slot="reference" icon="el-icon-delete-solid" type="danger" size="mini">删除</el-button>
+              </el-popconfirm>
+            </template>
+          </el-table-column>
+        </el-table>
 
+      </div>
+      <!-- 最后一行统计 -->
+      <div class="cart-product-info">
+        <div style="width: 1170px;margin: auto">
+          <a href="javascript:;" class="delete-product" @click="delchecked">删除所选商品</a>
+          <a href="#" class="keep-shopping" @click="keepShopping">继续购物</a>
+          <a href="javascript:;" class="fr btn-buy" @click="bug">去结算</a>
+          <a href="javascript:;" class="fr product-total">￥<span>{{totalPrice}}</span></a>
+          <a href="javascript:;" class="fr check-num"><span>{{totalNumber}}</span>件商品总计（不含运费）:</a>
+        </div>
 
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+  import $ from 'jQuery';
+
   export default {
     data() {
       return {
@@ -90,7 +130,13 @@
         formLabelWidth: "200",
         //表格中的数据
         tableData: [],
-        selectedId:[],//被选中的id集合
+        selectedId: [],//被选中的id集合
+        account:0,
+
+        colorDatas:[],
+        versionDatas:[],
+        numberDatas:[],
+        commodity_idDatas:[],
       };
     },
     methods: {
@@ -99,12 +145,12 @@
         this.multipleSelection = val; //给定义的数组赋值
 
         // 去重获取被选中的id值存入到数组中
-        if(val.length==0){
-          this.selectedId.length=0;
-        }else{
+        if (val.length == 0) {
+          this.selectedId.length = 0;
+        } else {
 
           //先清空之前的
-          this.selectedId.length=0;
+          this.selectedId.length = 0;
           //push值进去
           for (let selectedItem of val) {
             this.selectedId.push(selectedItem.id)
@@ -117,39 +163,42 @@
         alert("取消了");
       },
       //获取购物车数据
-      getData(){
+      getData() {
         var _this = this;
 
-        var params = new URLSearchParams();
-        params.append("user_id",1);
+        if (sessionStorage.getItem("account")!=null&&sessionStorage.getItem("account")!=undefined&&sessionStorage.getItem("account")!=""){
+          _this.account=sessionStorage.getItem("account");
+        }else {
+          _this.account=0;
+        }
 
-        this.$axios.post("shoppingCar/query.action",params).
-        then(function (result) {
+        var params = new URLSearchParams();
+        params.append("user_id", 1);
+
+        this.$axios.post("shoppingCar/query.action", params).then(function (result) {
           //获取到购物车对象集合
           var shoppingCartList = result.data.rows;
-          for(var item of shoppingCartList){
-            item.commodity.img='src/assets/'+item.commodity.img;
+          for (var item of shoppingCartList) {
+            item.commodity.img = 'src/assets/' + item.commodity.img;
           }
 
-          _this.tableData=shoppingCartList;
+          _this.tableData = shoppingCartList;
 
-        }).
-        catch(function (error) {
+        }).catch(function (error) {
 
         });
       },
 
       //删除单个购物车
-      delOne(id){
-        var _this =this;
+      delOne(id) {
+        var _this = this;
 
-        var delid = id+",";
+        var delid = id + ",";
         var params = new URLSearchParams();
-        params.append("ids",delid);
+        params.append("ids", delid);
 
 
-        this.$axios.post("shoppingCar/delete.action",params).
-        then(function (result) {  //成功  执行then里面的方法
+        this.$axios.post("shoppingCar/delete.action", params).then(function (result) {  //成功  执行then里面的方法
 
           _this.$message({
             message: result.data,
@@ -163,102 +212,108 @@
         });
 
         //操作做完 清空delids
-        this.delids.length=0;
+        this.delids.length = 0;
 
       },
       //删除勾选的商品
-      delchecked(){
+      delchecked() {
         var _this = this;
 
         var delids = _this.selectedId;
 
         //判断用户是否选中了商品
-        if(delids.length==0){
+        if (delids.length == 0) {
           _this.$message.warning("请选中商品后删除");
           return;
         }
 
-        var delidsString = "";
-        //循环合成一个id字符串
-        for(var i=0;i<delids.length;i++){
-          delidsString=delidsString+delids[i]+",";
-        }
-
-        var params = new URLSearchParams();
-        params.append("ids",delidsString);
-
-        this.$axios.post("shoppingCar/delete.action",params).
-        then(function (result) {  //成功  执行then里面的方法
-
-          _this.getData();  //删除操作做完，刷新数据
-
-        }).catch(function (error) { //失败 执行catch方法
-
-        });
-
-        //操作做完 清空delids
-        this.selectedId.length=0;
-      },
-      //继续购物
-      keepShopping(){
-        //跳转到商品浏览界面
-      },
-      //结算
-      bug(){
-        //点击结算时，添加订单数据
-        var _this = this;
-        var orderNumber = "";
-
-        var multipleSelection = _this.multipleSelection;
-        for(var item of multipleSelection){
-
-          console.log("666"+item.user.user_id);
-
-          orderNumber = "sk";
-
-          var date = new Date();
-          var time=date.getFullYear()+""+(date.getMonth()+1)+""+date.getDate();//表示当前日期
-
-          //加上日期
-          orderNumber=orderNumber+time;
-          //加上后八位随机数
-          for(var i=0;i<8;i++){
-            orderNumber=orderNumber+Math.floor(Math.random()*9+1);
+        _this.$confirm('此操作将永久删除该商品, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          _this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+          var delidsString = "";
+          //循环合成一个id字符串
+          for (var i = 0; i < delids.length; i++) {
+            delidsString = delidsString + delids[i] + ",";
           }
 
           var params = new URLSearchParams();
-          params.append("order_number",orderNumber);
-          params.append("user_id",item.user.id);
-          params.append("merchants_id",item.user.user_id);
-          params.append("color",item.colorInfo.color);
-          params.append("version",item.versionInfo.version);
-          var img = item.commodity.img
-          var imgList = img.split("/");
-          params.append("img",imgList[2]);
-          params.append("price",item.versionInfo.price);
-          params.append("number",item.number);
-          params.append("commodity_id",item.commodity.id);
-          params.append("totalmoney",Number(item.versionInfo.price)*Number(item.number));
-          params.append("state",1);
-          params.append("remark","");
+          params.append("ids", delidsString);
 
+          this.$axios.post("shoppingCar/delete.action", params).then(function (result) {  //成功  执行then里面的方法
 
-          //异步提交数据
-          this.$axios.post("userOrder/insert.action",params).
-          then(function (result) {  //成功  执行then里面的方法
-            if (result.data=="添加成功"){
-              //删除被结算的数据
-              _this.delchecked();
-            }
+            _this.getData();  //删除操作做完，刷新数据
 
           }).catch(function (error) { //失败 执行catch方法
 
           });
 
+          //操作做完 清空delids
+          this.selectedId.length = 0;
+        }).catch(() => {
+          _this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        })
+      },
+
+      delBuyCheck(){
+        var _this = this;
+        var delids = _this.selectedId;
+        var delidsString = "";
+        //循环合成一个id字符串
+        for (var i = 0; i < delids.length; i++) {
+          delidsString = delidsString + delids[i] + ",";
         }
 
+        var params = new URLSearchParams();
+        params.append("ids", delidsString);
 
+        this.$axios.post("shoppingCar/delete.action", params).then(function (result) {  //成功  执行then里面的方法
 
+        }).catch(function (error) { //失败 执行catch方法
+
+        });
+      },
+      //继续购物
+      keepShopping() {
+        //跳转到商品浏览界面
+        this.$router.push("/sort");
+      },
+      //结算
+      bug() {
+        //点击结算时，添加订单数据
+        var _this = this;
+
+        var multipleSelection = _this.multipleSelection;
+
+        for (var i = 0; i <multipleSelection.length ; i++) {
+          _this.colorDatas.push(multipleSelection[i].colorInfo.id);
+          _this.versionDatas.push(multipleSelection[i].versionInfo.id);
+          _this.numberDatas.push(multipleSelection[i].number);
+          _this.commodity_idDatas.push(multipleSelection[i].commodity.id);
+
+        }
+        _this.delBuyCheck();
+        _this.$router.push({
+          path: '/balance',
+          query:{
+            colorDatas:_this.colorDatas,
+            versionDatas:_this.versionDatas,
+            numberDatas:_this.numberDatas,
+            commodity_idDatas:_this.commodity_idDatas
+          }
+        })
+        _this.colorDatas.length=0;
+        _this.versionDatas.length=0;
+        _this.numberDatas.length=0;
+        _this.commodity_idDatas.length=0;
         _this.getData();  //操作做完，刷新数据
 
       },
@@ -292,19 +347,135 @@
 
 <style scoped>
   .cart {
-    margin: 50px auto;
-    width: 1000px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    text-align: left;
+    background-color: #f0f3f7;
   }
-  .group_btn {
-    margin-bottom: 30px;
+
+  .head {
+    width: 100%;
+    height: 36px;
+    line-height: 36px;
+    background-color: rgba(0, 0, 0, .8);
   }
+
+  .s-sub {
+    float: left;
+    text-align: left;
+  }
+
+  .s-main {
+    float: right;
+    text-align: right;
+  }
+
+  .head-left {
+    display: inline-block;
+    padding-left: 10px;
+    padding-right: 10px;
+    color: lightgray;
+    font-size: 12px;
+    text-decoration: none;
+  }
+
+  .head-left:hover {
+    text-decoration: none;
+    color: white;
+  }
+
+  .head-left:focus {
+    text-decoration: none;
+    color: white;
+  }
+
+  .head-right {
+    display: inline-block;
+    padding-left: 10px;
+    padding-right: 10px;
+    color: lightgray;
+    font-size: 12px;
+    text-decoration: none;
+  }
+
+  .head-right:hover {
+    text-decoration: none;
+    color: white;
+  }
+
+  .head-right:focus {
+    text-decoration: none;
+    color: white;
+  }
+
+  .box-top {
+    width: 100%;
+    height: 80px;
+    background-color: white;
+    position: absolute;
+    z-index: 999;
+    top: 35px;
+    margin-bottom: 80px;
+    box-shadow: 0 0 10px 5px rgba(0, 0, 0, .1);
+  }
+
+  .logo {
+    float: left;
+    display: inline-block;
+    width: 127px;
+    height: 60px;
+    margin-top: 10px;
+    background: url("img/suke_logo.png");
+    background-size: 100% 100%;
+  }
+
+  .search-top {
+    float: right;
+    width: 250px;
+    height: 30px;
+    margin-top: 24px;
+    background-color: rgb(240, 240, 240);
+    border-radius: 50px;
+    overflow: hidden;
+    border: transparent solid 1px;
+  }
+
+  .search-top:hover {
+    border: lightgray solid 1px;
+  }
+
+  .search-top-ipt {
+    float: left;
+    width: 220px;
+    height: 30px;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    padding-left: 15px;
+  }
+
+  .a-search {
+    display: inline-block;
+    margin-top: 3px;
+  }
+
+  .icon-search {
+    height: 20px;
+    width: 20px;
+  }
+
   .addDialog .el-input {
     width: 90%;
   }
+
   .total_warpper {
     text-align: right;
     margin-top: 30px;
   }
+
   h3 {
     margin-top: 10px;
   }
@@ -374,20 +545,32 @@
     vertical-align: middle;
   }
 
-  .page-shopping-cart {
-    width: 1200px;
-    margin: 50px auto;
-    font-size: 14px;
-    border: 1px solid #e3e3e3;
-    border-top: 2px solid #317ee7;
+  .box {
+    width: 100%;
+    background-color: #f0f3f7;
+    padding-top: 50px;
+    padding-bottom: 100px;
   }
 
-  .page-shopping-cart .cart-title {
-    color: #317ee7;
+  .page-shopping-cart {
+    width: 1200px;
+    margin: auto;
+    font-size: 14px;
+    border-radius: 10px;
+    background-color: white;
+    overflow: hidden;
+    padding-bottom: 0;
+  }
+
+  .cart-title {
+    display: inline-block;
+    width: 100%;
+    color: rgba(0, 0, 0, .7);
     font-size: 16px;
     text-align: left;
     padding-left: 20px;
     line-height: 68px;
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, .1);
   }
 
   .page-shopping-cart .red-text {
@@ -403,6 +586,7 @@
     background-size: 100% 100%;
     cursor: pointer;
   }
+
   /* 点击时改变勾选 */
 
   .page-shopping-cart .check-span.check-true {
@@ -451,6 +635,7 @@
   .cart-product-title .td-check .check-span .check-span {
     margin: 9px 6px 0 0;
   }
+
   /* 内容开始 */
 
   .cart-product {
@@ -533,20 +718,26 @@
   .cart-product table .td-do {
     font-size: 12px;
   }
+
   /* 最后一行统计 */
 
   .cart-product-info {
-    height: 50px;
-    line-height: 50px;
-    background: #f7f7f7;
-    padding-left: 20px;
+    height: 80px;
+    width: 100%;
+    line-height: 80px;
+    padding-left: 50px;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, .1);
+    position: fixed;
+    z-index: 999;
+    bottom: 0;
+    background-color: white;
   }
 
-  .cart-product-info .delete-product {
+  .delete-product {
     color: #666;
   }
 
-  .cart-product-info .delete-product span {
+  .delete-product span {
     display: inline-block;
     vertical-align: top;
     margin: 18px 8px 0 0;
@@ -555,29 +746,29 @@
     background: url("assets/删除.png") no-repeat -60px 0;
   }
 
-  .cart-product-info .product-total {
+  .product-total {
     font-size: 14px;
     color: #e94826;
   }
 
-  .cart-product-info .product-total span {
+  .product-total span {
     font-size: 20px;
   }
 
-  .cart-product-info .check-num {
+  .check-num {
     color: #333;
   }
 
-  .cart-product-info .check-num span {
+  .check-num span {
     color: #e94826;
   }
 
-  .cart-product-info .keep-shopping {
+  .keep-shopping {
     color: #666;
     margin-left: 40px;
   }
 
-  .cart-product-info .keep-shopping span {
+  .keep-shopping span {
     display: inline-block;
     vertical-align: top;
     margin: 18px 8px 0 0;
@@ -586,16 +777,20 @@
     background: url("assets/购物车.png") no-repeat -40px 0;
   }
 
-  .cart-product-info .btn-buy {
+  .btn-buy {
     height: 50px;
-    color: #fff;
+    color: white;
     font-size: 20px;
     display: block;
     width: 110px;
-    background: #ff7700;
+    background-color: indianred;
     text-align: center;
     margin-left: 30px;
+    margin-top: 15px;
+    line-height: 50px;
+    border-radius: 10px;
   }
+
   /* cart-worder */
 
   .page-shopping-cart .cart-worder {

@@ -3,7 +3,7 @@
     <!--顶部-->
     <div style="height: 115px">
       <div class="head">
-        <div class="container">
+        <div style="width: 1170px;margin: auto">
           <div class="s-sub">
             <a class="head-left" href="index.html">首页</a>
             <a class="head-left" href="index.html">速客官网</a>
@@ -14,15 +14,15 @@
             </span>
 
             <a class="head-right" href="javascript:;" v-show="account!=0">欢迎你， {{account}}</a>
-            <a class="head-right" href="javascript:;" v-show="account==0">注册</a>
-            <a class="head-right" href="javascript:;">我的订单</a>
+            <a class="head-right" href="javascript:;" @click="$router.push('/register')" v-show="account==0">注册</a>
+            <a class="head-right" href="javascript:;" @click="$router.push('/datum')">个人中心</a>
             <a class="head-right" href="javascript:;" @click="$router.push('/cart')">购物车</a>
           </div>
         </div>
       </div>
       <!--顶部logo/搜索框-->
       <div class="box-top">
-        <div class="container">
+        <div style="width: 1170px;margin: auto">
           <div class="row">
             <a href="index.html" class="logo"></a>
             <div class="search-top">
@@ -79,7 +79,7 @@
             暂未找到您要查找的商品，正在努力为您备货中...
             <img title="跑得太慢？点击加速" src="src/img/26097-202004300637175eaa721d7566a.gif" @click="imgpaoBu($event)" style="width: 100px;height: 100px;cursor: pointer"/>
           </div>
-          <div class="good-boxs" @click=" $router.push('/detail?id='+item.id) " v-for="item in commodityData" v-if="commodityData.length!=0">
+          <div class="good-boxs" @click="$router.push('/detail?id='+item.id) " v-for="item in commodityData" v-if="commodityData.length!=0">
             <div class="good-box">
               <div class="goods_img_box">
                 <img :src="item.img" class="goods_img"/>

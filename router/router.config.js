@@ -7,8 +7,13 @@ import Index from "../src/index";
 import Authority from "../src/authority";
 import Center from "../src/center.vue";
 import Detail from "../src/detail.vue";
-import Hou_login from "../src/hou_login.vue";
+import Hou_login from "../components/hou_login.vue";
 import Sort from "../src/sort.vue";
+import Index2 from "../src/index2.vue";
+import Cart from "../src/Cart.vue";
+import Balance from "../src/balance";
+import Datum from "../src/datum";
+
 
 
 Vue.use(VueRouter)
@@ -23,9 +28,10 @@ var router = new VueRouter({
     {path:"/detail",component:Detail},
     {path:"/sort",component:Sort},
     {path:"/cart",component:Cart},
+    {path:"/balance",component:Balance},
+    {path:"/datum",component:Datum},
     {path:"/index2",component:Index2},
-    {path:"/index2",component:Index2},
-    {path:"/",component:Hou_login}//默认访问登录页面
+    {path:"/",component:Index}//默认访问登录页面
   ]
 })
 
